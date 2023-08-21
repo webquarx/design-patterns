@@ -24,5 +24,13 @@
     "eslint": "^8.47.0",
     "rimraf": "^5.0.1",
     "typescript": "^5.1.6"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webquarx/design-patterns.git"
+  },
+  "bugs": {
+    "url": "https://github.com/webquarx/design-patterns/issues"
+  },
+  "homepage": "https://github.com/webquarx/design-patterns#readme"
 }
