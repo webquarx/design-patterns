@@ -6,7 +6,8 @@
     "rootDir": "src",
     "sourceMap": true,
     "declaration": true,
-    "strict": true
+    "strict": true,
+    "types": ["@types/jest"]
   },
   "exclude": [
     "node_modules"
