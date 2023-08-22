@@ -14,15 +14,16 @@ While a construction order is the order in array for ChainOfResponsibility class
 
 ```
 export default class TestChainStep extends ChainOfResponsibilityStep {
-    execute(/* any params */) {
+    execute(params: any) {
         console.log('TestChainStep.execute');
+        return super.execute(params);
     }
 }
 
 const chain = new ChainOfResponsibility([
   new TestChainStep(),
 ]);
-chain.execute(/* any params */);
+chain.execute();
 ```
 
 ### Classic Usage
@@ -30,14 +31,16 @@ Construct both steps with setNext method and call execute for the first one.
 
 ```
 export default class FirstChainStep extends ChainOfResponsibilityStep {
-    execute(/* any params */) {
+    execute(params: any) {
         console.log('FirstChainStep.execute');
+        return super.execute(params);
     }
 }
 
 export default class SecondChainStep extends ChainOfResponsibilityStep {
-    execute(/* any params */) {
+    execute(params: any) {
         console.log('SecondChainStep.execute');
+        return super.execute(params);
     }
 }
 
@@ -46,5 +49,5 @@ const secondStep = new SecondChainStep();
 
 firstStep.setNext(secondStep);
 
-firstStep.execute(/* any params */);
+firstStep.execute();
 ```
