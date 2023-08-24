@@ -18,6 +18,7 @@
   "types": "dist/index.d.ts",
   "sideEffects": false,
   "scripts": {
+    "prepack": "npm run build",
     "build": "rimraf dist && rollup --config rollup.config.mjs",
     "lint": "eslint src",
     "test": "jest"
