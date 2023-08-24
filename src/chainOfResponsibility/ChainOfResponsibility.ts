@@ -1,4 +1,4 @@
-import ChainOfResponsibilityStep from "./ChainOfResponsibilityStep";
+import ChainOfResponsibilityStep from './ChainOfResponsibilityStep';
 
 export default class ChainOfResponsibility extends ChainOfResponsibilityStep {
     constructor(steps: ChainOfResponsibilityStep[]) {

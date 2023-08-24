@@ -1,5 +1,5 @@
-import IChainOfResponsibilityStep from "../IChainOfResponsibilityStep";
-import ChainOfResponsibilityStep from "../ChainOfResponsibilityStep";
+import IChainOfResponsibilityStep from '../IChainOfResponsibilityStep';
+import ChainOfResponsibilityStep from '../ChainOfResponsibilityStep';
 
 class FirstStep extends ChainOfResponsibilityStep {}
 class SecondStep extends ChainOfResponsibilityStep {}

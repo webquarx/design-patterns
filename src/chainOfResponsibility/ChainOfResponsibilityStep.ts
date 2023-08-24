@@ -1,4 +1,4 @@
-import IChainOfResponsibilityStep from "./IChainOfResponsibilityStep";
+import IChainOfResponsibilityStep from './IChainOfResponsibilityStep';
 
 export default abstract class ChainOfResponsibilityStep implements IChainOfResponsibilityStep {
     private nextStep?: IChainOfResponsibilityStep;
