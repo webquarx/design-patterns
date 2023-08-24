@@ -1,3 +1,4 @@
+import del from 'rollup-plugin-delete';
 import ts from 'rollup-plugin-ts';
 
 export default [
@@ -16,6 +17,7 @@ export default [
       },
     ],
     plugins: [
+      del({targets: 'dist/*'}),
       ts(),
     ]
   }
