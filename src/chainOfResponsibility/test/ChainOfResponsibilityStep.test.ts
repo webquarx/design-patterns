@@ -18,7 +18,7 @@ describe('ChainOfResponsibilityStep', () => {
     it('setNext should return the step for next', async () => {
         step1 = new FirstStep();
         step2 = new SecondStep();
-        const step3 = new ThirdStep()
+        const step3 = new ThirdStep();
         step1.setNext(step2).setNext(step3);
 
         // @ts-expect-error nextStep is private
