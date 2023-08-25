@@ -3,6 +3,7 @@ import ChainOfResponsibilityStep from '../ChainOfResponsibilityStep';
 
 class FirstStep extends ChainOfResponsibilityStep {}
 class SecondStep extends ChainOfResponsibilityStep {}
+class ThirdStep extends ChainOfResponsibilityStep {}
 
 describe('ChainOfResponsibilityStep', () => {
     let step1: IChainOfResponsibilityStep;
@@ -12,6 +13,18 @@ describe('ChainOfResponsibilityStep', () => {
         step1 = new FirstStep();
         step2 = new SecondStep();
         step1.setNext(step2);
+    });
+
+    it('setNext should return the step for next', async () => {
+        step1 = new FirstStep();
+        step2 = new SecondStep();
+        const step3 = new ThirdStep()
+        step1.setNext(step2).setNext(step3);
+
+        // @ts-expect-error nextStep is private
+        expect(step1.nextStep).toEqual(step2);
+        // @ts-expect-error nextStep is private
+        expect(step2.nextStep).toEqual(step3);
     });
 
     it('should pass arguments down the chain', async () => {
