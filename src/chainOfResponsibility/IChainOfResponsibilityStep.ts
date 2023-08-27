@@ -1,5 +1,5 @@
 import IExecutable from '../core/IExecutable';
 
 export default interface IChainOfResponsibilityStep extends IExecutable {
-    setNext(nextStep: IChainOfResponsibilityStep): IChainOfResponsibilityStep;
+    setNext(nextStep?: IChainOfResponsibilityStep): IChainOfResponsibilityStep;
 }

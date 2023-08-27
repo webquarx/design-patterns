@@ -45,8 +45,8 @@ describe('ChainOfResponsibilityStep', () => {
         expect(result).toBe(expectedResult);
     });
 
-    it('should not execute next step if it is not set', async () => {
-        step1.setNext(undefined as unknown as IChainOfResponsibilityStep);
+    it('should not execute next step if it is was dropped', async () => {
+        step1.setNext();
         const step2ExecuteSpy = jest.spyOn(step2, 'execute');
         await step1.execute();
         expect(step2ExecuteSpy).not.toHaveBeenCalled();
