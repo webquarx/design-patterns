@@ -3,9 +3,17 @@ import IChainOfResponsibilityStep from './IChainOfResponsibilityStep';
 export default abstract class ChainOfResponsibilityStep implements IChainOfResponsibilityStep {
     private nextStep?: IChainOfResponsibilityStep;
 
-    setNext(nextStep: IChainOfResponsibilityStep): IChainOfResponsibilityStep {
-        this.nextStep = nextStep;
-        return nextStep;
+    setNext(nextStep?: IChainOfResponsibilityStep): IChainOfResponsibilityStep {
+        this.appendStep(nextStep);
+        return nextStep || this;
+    }
+
+    private appendStep(nextStep?: IChainOfResponsibilityStep): void {
+        if (!nextStep || !this.nextStep) {
+            this.nextStep = nextStep;
+            return;
+        }
+        this.nextStep.setNext(nextStep);
     }
 
     async execute(...args: any[]) {
