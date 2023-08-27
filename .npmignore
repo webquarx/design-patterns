@@ -5,3 +5,4 @@ jest.config.js
 tsconfig.json
 rollup.config.mjs
 .idea
+.husky
