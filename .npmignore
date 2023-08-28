@@ -6,3 +6,4 @@ tsconfig.json
 rollup.config.mjs
 .idea
 .husky
+coverage/
