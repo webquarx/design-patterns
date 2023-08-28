@@ -13,50 +13,42 @@
 Light-weight library for simple using design patterns for JavaScript and TypeScript projects.
 
 ## Chain Of Responsibility
-There are two types of using Chain of Responsibility pattern: simple and classic.
-The library supports both variants synchronous and asynchronous.
-For asynchronous one just add async for execute method in a step and await for chain.execute or chainStep.execute.
-
-### Simple Usage
-The method setNext is called automatically, you are focused only on handling the execute method, not on construction.
-While a construction order is the order in array for ChainOfResponsibility class. This class extends usual ChainOfResponsibilityStep.
-
-```
+Synchronous step definition
+```typescript
 export default class TestChainStep extends ChainOfResponsibilityStep {
     execute(params: any) {
         console.log('TestChainStep.execute');
         return super.execute(params);
     }
 }
-
-const chain = new ChainOfResponsibility([
-  new TestChainStep(),
-]);
-chain.execute();
 ```
+For asynchronous variant just add async for execute method.
 
-### Classic Usage
-Construct both steps with setNext method and call execute for the first one. 
+## Constructing a Chain
+There are two ways to construct a chain.
+```typescript
+// Classic way
 
-```
-export default class FirstChainStep extends ChainOfResponsibilityStep {
-    execute(params: any) {
-        console.log('FirstChainStep.execute');
-        return super.execute(params);
-    }
-}
+const firstStep = new TestChainStep();
+const secondStep = new TestChainStep();
+const thirdStep = new TestChainStep();
 
-export default class SecondChainStep extends ChainOfResponsibilityStep {
-    execute(params: any) {
-        console.log('SecondChainStep.execute');
-        return super.execute(params);
-    }
-}
-
-const firstStep = new FirstChainStep();
-const secondStep = new SecondChainStep();
-
-firstStep.setNext(secondStep);
+firstStep.setNext(secondStep).setNext(thirdStep);
 
 firstStep.execute();
 ```
+
+It's possible to focus on constructing a chain, not on definition variable and chain of setNext methods.
+```typescript
+// Simple way
+
+const chain = new ChainOfResponsibility([
+  new TestChainStep(),
+  new TestChainStep(),
+  new TestChainStep(),
+]);
+
+chain.execute();
+```
+With simple way the method setNext will be called automatically. There is no need to call it for every step when defining a chain.
+Construction order is the order in array for ChainOfResponsibility class, which extends usual ChainOfResponsibilityStep.
