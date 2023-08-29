@@ -24,7 +24,7 @@ export default class TestChainStep extends ChainOfResponsibilityStep {
 ```
 For asynchronous variant just add async for execute method.
 
-## Constructing a Chain
+### Constructing a Chain
 There are two ways to construct a chain.
 ```typescript
 // Classic way
@@ -53,7 +53,7 @@ chain.execute();
 With simple way the method setNext will be called automatically. There is no need to call it for every step when defining a chain.
 Construction order is the order in array for ChainOfResponsibility class, which extends usual ChainOfResponsibilityStep.
 
-## Merging Chains
+### Merging Chains
 Usually there is no way to merge two chains without loosing steps in first one, if there is not link to last step.
 Following example does not work for usual chains, but it works for steps inherited from ChainOfResponsibilityStep.
 
@@ -71,7 +71,7 @@ chain2.setNext(new Step4());
 chain1.setNext(chain2);
 ```
 
-## Merging With Nesting
+### Merging With Nesting
 Merging chains is also working with nesting chains. This forms one long chain.  
 ```typescript
 class Step1 extends ChainOfResponsibilityStep {}
