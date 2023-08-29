@@ -52,3 +52,49 @@ chain.execute();
 ```
 With simple way the method setNext will be called automatically. There is no need to call it for every step when defining a chain.
 Construction order is the order in array for ChainOfResponsibility class, which extends usual ChainOfResponsibilityStep.
+
+## Merging Chains
+Usually there is no way to merge two chains without loosing steps in first one, if there is not link to last step.
+Following example does not work for usual chains, but it works for steps inherited from ChainOfResponsibilityStep.
+
+```typescript
+class Step1 extends ChainOfResponsibilityStep {}
+// Step2, Step3, Step4 have the same class definitions...
+
+const chain1 = new Step1();
+chain1.setNext(new Step2());
+
+const chain2 = new Step3();
+chain2.setNext(new Step4());
+
+// Step2 will have nextStep to Step3
+chain1.setNext(chain2);
+```
+
+## Merging With Nesting
+Merging chains is also working with nesting chains. This forms one long chain.  
+```typescript
+class Step1 extends ChainOfResponsibilityStep {}
+// Step2, Step3, Step4 have the same class definitions...
+
+const chain = new ChainOfResponsibility([
+    new ChainOfResponsibility([
+        new Step1(),
+        new Step2(),
+    ]),
+    new ChainOfResponsibility([
+        new Step3(),
+        new Step4(),
+    ]),
+]);
+```
+As result this will be the same as:
+```typescript
+const step1 = new Step1();
+const step2 = new Step2();
+const step3 = new Step3();
+const step4 = new Step4();
+
+step1.setNext(step2).setNext(step3).setNext(step4);
+```
+This makes it possible to construct part of chains in different modules and combine them later into one long chain.
