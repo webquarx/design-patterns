@@ -1,3 +1,7 @@
+interface IExecuteFunc {
+    (...args: any[]): void;
+}
+
 export default interface IExecutable {
-    execute(...args: any[]): void;
+    execute: IExecuteFunc;
 }
