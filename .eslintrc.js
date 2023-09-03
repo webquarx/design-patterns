@@ -18,6 +18,7 @@ module.exports = {
         '@typescript-eslint/no-empty-function': 'warn',
         '@typescript-eslint/indent': ['error', 4],
         'no-plusplus': 'off',
+        'quotes': ['error', 'single'],
     },
     overrides: [
         {
