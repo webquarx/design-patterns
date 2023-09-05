@@ -43,15 +43,31 @@ It's possible to focus on constructing a chain, not on definition variable and c
 // Simple way
 
 const chain = new ChainOfResponsibility([
-  new TestChainStep(),
-  new TestChainStep(),
-  new TestChainStep(),
+    new TestChainStep(),
+    new TestChainStep(),
+    new TestChainStep(),
 ]);
 
 chain.execute();
 ```
 With simple way the method setNext will be called automatically. There is no need to call it for every step when defining a chain.
 Construction order is the order in array for ChainOfResponsibility class, which extends usual ChainOfResponsibilityStep.
+
+### Using a function instead of step
+There is a simple way to use function instead of chain step class.
+```typescript
+const chain = new ChainOfResponsibility([
+    (execute, param) => {
+        console.log('function execute');
+        return execute(param);
+    },
+    new TestChainStep(),
+]);
+
+chain.execute(param);
+```
+Where **execute** param is a function to call execution for next step.
+It's analog of super.execute() in the class version. 
 
 ### Merging Chains
 Usually there is no way to merge two chains without loosing steps in first one, if there is not link to last step.
