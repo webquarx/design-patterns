@@ -38,7 +38,7 @@ firstStep.setNext(secondStep).setNext(thirdStep);
 firstStep.execute();
 ```
 
-It's possible to focus on constructing a chain, not on definition variable and chain of setNext methods.
+It's possible to focus on constructing a chain, not on definition variable and series of setNext method.
 ```typescript
 // Simple way
 
@@ -53,7 +53,7 @@ chain.execute();
 With simple way the method setNext will be called automatically. There is no need to call it for every step when defining a chain.
 Construction order is the order in array for ChainOfResponsibility class, which extends usual ChainOfResponsibilityStep.
 
-### Using a function instead of step
+### Using a Function for Step
 There is a simple way to use function instead of chain step class.
 ```typescript
 const chain = new ChainOfResponsibility([
@@ -68,6 +68,28 @@ chain.execute(param);
 ```
 Where **execute** param is a function to call execution for next step.
 It's analog of super.execute() in the class version. 
+
+### Constructing with useChain Function
+If you prefer to use functions instead of classes, there is a way to create chain step or whole chain only with one **useChain** function.
+```typescript
+const step = useChain(
+    (execute, param) => {
+        console.log('function execute');
+        return execute(param);
+    },
+);
+
+const chain = new useChain([
+    step,
+    (execute, param) => {
+        console.log('function execute 2');
+        return execute(param);
+    },
+    new TestChainStep(),
+]);
+
+chain.execute(param);
+```
 
 ### Merging Chains
 Usually there is no way to merge two chains without loosing steps in first one, if there is not link to last step.
