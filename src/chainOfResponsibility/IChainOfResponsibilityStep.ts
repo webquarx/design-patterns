@@ -5,3 +5,4 @@ export default interface IChainOfResponsibilityStep extends IExecutable {
 }
 
 export type TChainOfResponsibilityStep = IChainOfResponsibilityStep | IExecuteFuncCallback;
+export type TChainOfResponsibility = TChainOfResponsibilityStep[] | TChainOfResponsibilityStep;
