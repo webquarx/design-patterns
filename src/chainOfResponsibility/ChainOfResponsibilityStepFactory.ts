@@ -6,7 +6,12 @@ export default class ChainOfResponsibilityStepFactory {
         if (typeof step === 'function') {
             return new ChainOfResponsibilityExecuteFuncAdapter(step);
         }
-
         return step;
+    }
+
+    static createEmptyStep(): IChainOfResponsibilityStep {
+        return ChainOfResponsibilityStepFactory.createStep(
+            (execute, ...args) => execute(...args),
+        );
     }
 }
