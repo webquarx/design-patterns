@@ -43,9 +43,9 @@ describe('useChain function', () => {
 
     it('should create chain with merging and nesting', async () => {
         class TestStep extends ChainOfResponsibilityStep {
-            async execute(data: number[]) {
+            async execute(data: number[]): Promise<number[]> {
                 data.push(1);
-                return super.execute(data);
+                return await super.execute(data);
             }
         }
 

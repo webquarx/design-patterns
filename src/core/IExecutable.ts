@@ -1,5 +1,5 @@
 interface IExecuteFunc {
-    (...args: any[]): void;
+    (...args: any[]): Promise<any>;
 }
 
 export interface ICanExecuteFunc {
@@ -7,7 +7,7 @@ export interface ICanExecuteFunc {
 }
 
 export interface IExecuteFuncCallback {
-    (execute: IExecuteFunc, ...args: any[]): void;
+    (execute: IExecuteFunc, ...args: any[]): Promise<any>;
 }
 
 export default interface IExecutable {

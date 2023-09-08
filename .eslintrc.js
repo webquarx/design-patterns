@@ -17,6 +17,7 @@ module.exports = {
         '@typescript-eslint/no-non-null-assertion': 'error',
         '@typescript-eslint/no-empty-function': 'warn',
         '@typescript-eslint/indent': ['error', 4],
+        "@typescript-eslint/return-await": ["error", "always"],
         'no-plusplus': 'off',
         'quotes': ['error', 'single'],
     },

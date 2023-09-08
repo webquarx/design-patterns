@@ -16,9 +16,9 @@ export default abstract class ChainOfResponsibilityStep implements IChainOfRespo
         this.nextStep.setNext(nextStep);
     }
 
-    async execute(...args: any[]) {
+    async execute(...args: any[]): Promise<any> {
         if (this.nextStep) {
-            return this.nextStep.execute(...args);
+            return await this.nextStep.execute(...args);
         }
         return args;
     }

@@ -15,17 +15,17 @@ export default class ConditionalChainOfResponsibility extends ChainOfResponsibil
         this.canExecute = chain.canExecute;
     }
 
-    async execute(...args: any[]) {
+    async execute(...args: any[]): Promise<any> {
         if (typeof this.canExecute === 'boolean' && !this.canExecute) {
-            return this.executeLastStep(args);
+            return await this.executeLastStep(args);
         }
         if (typeof this.canExecute === 'function' && !this.canExecute(...args)) {
-            return this.executeLastStep(args);
+            return await this.executeLastStep(args);
         }
-        return super.execute(...args);
+        return await super.execute(...args);
     }
 
-    private async executeLastStep(args: any[]) {
-        return this.lastStep.execute(...args);
+    private async executeLastStep(args: any[]): Promise<any> {
+        return await this.lastStep.execute(...args);
     }
 }

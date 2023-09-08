@@ -6,7 +6,7 @@ export default class ChainOfResponsibilityExecuteFuncAdapter extends ChainOfResp
         super();
     }
 
-    async execute(...args: any[]) {
-        return this.executeFunc(super.execute.bind(this), ...args);
+    async execute(...args: any[]): Promise<any> {
+        return await this.executeFunc(super.execute.bind(this), ...args);
     }
 }

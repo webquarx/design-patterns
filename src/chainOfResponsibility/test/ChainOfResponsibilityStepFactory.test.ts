@@ -14,7 +14,7 @@ describe('ChainOfResponsibilityStepFactory', () => {
 
     it('should return the step itself for a non-function step', () => {
         const nonFuncStep: IChainOfResponsibilityStep = {
-            execute: () => {},
+            execute: () => Promise.resolve({}),
             setNext: () => nonFuncStep,
         };
 

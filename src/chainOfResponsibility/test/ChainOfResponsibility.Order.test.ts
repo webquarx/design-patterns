@@ -9,9 +9,9 @@ class TestStep extends ChainOfResponsibilityStep {
         this.constructedData = data;
     }
 
-    async execute(data: number[]) {
+    async execute(data: number[]): Promise<number[]> {
         data.push(this.constructedData);
-        return super.execute(data);
+        return await super.execute(data);
     }
 }
 

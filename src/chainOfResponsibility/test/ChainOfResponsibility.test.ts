@@ -4,9 +4,9 @@ import ChainOfResponsibilityStep from '../ChainOfResponsibilityStep';
 class TestStep extends ChainOfResponsibilityStep {
     processedData: any[] = [];
 
-    async execute(...args: any[]) {
+    async execute(...args: any[]): Promise<any> {
         this.processedData.push(args);
-        return super.execute(...args);
+        return await super.execute(...args);
     }
 }
 
