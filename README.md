@@ -13,16 +13,15 @@
 Light-weight library for simple using design patterns for JavaScript and TypeScript projects.
 
 ## Chain Of Responsibility
-Synchronous step definition
+Here is a step definition. The method is always asynchronous.
 ```typescript
 export default class TestChainStep extends ChainOfResponsibilityStep {
-    execute(params: any) {
+    async execute(params: any) {
         console.log('TestChainStep.execute');
-        return super.execute(params);
+        return await super.execute(params);
     }
 }
 ```
-For asynchronous variant just add async for execute method.
 
 ### Constructing a Chain
 There are two ways to construct a chain.
@@ -35,7 +34,7 @@ const thirdStep = new TestChainStep();
 
 firstStep.setNext(secondStep).setNext(thirdStep);
 
-firstStep.execute();
+await firstStep.execute();
 ```
 
 It's possible to focus on constructing a chain, not on definition variable and series of setNext method.
@@ -48,7 +47,7 @@ const chain = new ChainOfResponsibility([
     new TestChainStep(),
 ]);
 
-chain.execute();
+await chain.execute();
 ```
 With simple way the method setNext will be called automatically. There is no need to call it for every step when defining a chain.
 Construction order is the order in array for ChainOfResponsibility class, which extends usual ChainOfResponsibilityStep.
@@ -92,7 +91,7 @@ chain.execute(param);
 ```
 
 ### Merging Chains
-Usually there is no way to merge two chains without loosing steps in first one, if there is not link to last step.
+Usually there is no way to merge two chains without loosing steps in first one, if there is no link to last step.
 Following example does not work for usual chains, but it works for steps inherited from ChainOfResponsibilityStep.
 
 ```typescript
