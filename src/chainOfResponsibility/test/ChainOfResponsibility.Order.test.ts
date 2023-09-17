@@ -61,7 +61,7 @@ describe('ChainOfResponsibility Order', () => {
         const subChain2 = new TestStep(3);
         subChain2.setNext(new TestStep(4));
 
-        subChain1.setNext(subChain2);
+        subChain1.setLast(subChain2);
 
         const order: number[] = [];
         await subChain1.execute(order);
@@ -74,7 +74,7 @@ describe('ChainOfResponsibility Order', () => {
         subChain1.setNext(new TestStep(2));
         const subChain2 = new TestStep(3);
         subChain2.setNext(new TestStep(4));
-        subChain1.setNext(subChain2);
+        subChain1.setLast(subChain2);
 
         const chain = new ChainOfResponsibility([
             new ChainOfResponsibility([

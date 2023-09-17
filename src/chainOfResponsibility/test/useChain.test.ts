@@ -15,7 +15,7 @@ describe('useChain function', () => {
                 return execute(data);
             },
         );
-        step1.setNext(step2);
+        step1.setLast(step2);
 
         const order: number[] = [];
         await step1.execute(order);
@@ -68,7 +68,7 @@ describe('useChain function', () => {
                 return execute(data);
             },
         );
-        chain1.setNext(chain2);
+        chain1.setLast(chain2);
 
         const order: number[] = [];
         await chain1.execute(order);

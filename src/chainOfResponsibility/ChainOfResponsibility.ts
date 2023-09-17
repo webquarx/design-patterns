@@ -23,7 +23,12 @@ export default class ChainOfResponsibility extends ChainOfResponsibilityStep {
         let step: IChainOfResponsibilityStep | null = null;
         for (let i = 0; i < steps.length; i++) {
             const nextStep = ChainOfResponsibilityStepFactory.createStep(steps[i]);
-            step = (step || this).setNext(nextStep);
+            step = step || this;
+            if (step instanceof ChainOfResponsibilityStep) {
+                step = step.setLast(nextStep);
+            } else {
+                step = step.setNext(nextStep);
+            }
         }
     }
 }

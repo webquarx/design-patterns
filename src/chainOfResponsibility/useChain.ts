@@ -1,9 +1,10 @@
-import IChainOfResponsibilityStep, { IConditionalChainOfResponsibility, TChainOfResponsibility } from './IChainOfResponsibilityStep';
+import { IConditionalChainOfResponsibility, TChainOfResponsibility } from './IChainOfResponsibilityStep';
 import ChainOfResponsibility from './ChainOfResponsibility';
 import ConditionalChainOfResponsibility from './ConditionalChainOfResponsibility';
+import ChainOfResponsibilityStep from './ChainOfResponsibilityStep';
 
 export default function useChain(chain: TChainOfResponsibility | IConditionalChainOfResponsibility)
-    : IChainOfResponsibilityStep {
+    : ChainOfResponsibilityStep {
     if (Array.isArray(chain) || typeof chain === 'function' || 'setNext' in chain) {
         return new ChainOfResponsibility(chain);
     }

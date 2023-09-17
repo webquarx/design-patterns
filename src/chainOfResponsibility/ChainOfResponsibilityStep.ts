@@ -1,19 +1,20 @@
 import IChainOfResponsibilityStep from './IChainOfResponsibilityStep';
 
 export default abstract class ChainOfResponsibilityStep implements IChainOfResponsibilityStep {
-    private nextStep?: IChainOfResponsibilityStep;
+    private nextStep?: IChainOfResponsibilityStep | ChainOfResponsibilityStep;
 
     setNext(nextStep?: IChainOfResponsibilityStep): IChainOfResponsibilityStep {
-        this.appendStep(nextStep);
+        this.nextStep = nextStep;
         return nextStep || this;
     }
 
-    private appendStep(nextStep?: IChainOfResponsibilityStep): void {
-        if (!nextStep || !this.nextStep) {
-            this.nextStep = nextStep;
-            return;
+    setLast(step: IChainOfResponsibilityStep): IChainOfResponsibilityStep {
+        if (this.nextStep && 'setLast' in this.nextStep) {
+            this.nextStep.setLast(step);
+        } else {
+            this.nextStep = step;
         }
-        this.nextStep.setNext(nextStep);
+        return step;
     }
 
     async execute(...args: any[]): Promise<any> {
