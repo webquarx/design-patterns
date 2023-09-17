@@ -78,7 +78,7 @@ const step = useChain(
     },
 );
 
-const chain = new useChain([
+const chain = useChain([
     step,
     (execute, param) => {
         console.log('function execute 2');
@@ -92,8 +92,7 @@ chain.execute(param);
 
 ### Merging Chains
 Usually there is no way to merge two chains without loosing steps in first one, if there is no link to last step.
-Following example does not work for usual chains, but it works for steps inherited from ChainOfResponsibilityStep.
-
+That's why there is the setLast method for adding chains to the end of chain.
 ```typescript
 class Step1 extends ChainOfResponsibilityStep {}
 // Step2, Step3, Step4 have the same class definitions...
@@ -105,11 +104,13 @@ const chain2 = new Step3();
 chain2.setNext(new Step4());
 
 // Step2 will have nextStep to Step3
-chain1.setNext(chain2);
+chain1.setLast(chain2);
 ```
 
 ### Merging With Nesting
-Merging chains is also working with nesting chains. This forms one long chain.  
+Merging chains is also working with nesting chains. This forms one long chain.
+It makes possible to construct part of chains in different modules and combine them later into one long chain.
+
 ```typescript
 class Step1 extends ChainOfResponsibilityStep {}
 // Step2, Step3, Step4 have the same class definitions...
@@ -125,7 +126,23 @@ const chain = new ChainOfResponsibility([
     ]),
 ]);
 ```
-As result this will be the same as:
+
+The same with useChain function, e.g. where sub-chains were created in factory class:
+```typescript
+const chain = useChain([
+    useChain([
+        new Step1(),
+        (execute, param) => execute(param), // Step2
+    ]),
+    useChain([
+        (execute, param) => execute(param), // Step3
+        new Step4(),
+    ]),
+]);
+chain.execute(param);
+```
+
+The result will be the same as:
 ```typescript
 const step1 = new Step1();
 const step2 = new Step2();
@@ -134,4 +151,3 @@ const step4 = new Step4();
 
 step1.setNext(step2).setNext(step3).setNext(step4);
 ```
-This makes it possible to construct part of chains in different modules and combine them later into one long chain.
