@@ -3,7 +3,7 @@ import { IConditionalChainOfResponsibility } from './IChainOfResponsibilityStep'
 import ChainOfResponsibilityStepFactory from './ChainOfResponsibilityStepFactory';
 
 export default class ConditionalChainOfResponsibility extends ChainOfResponsibility {
-    private readonly canExecute;
+    private readonly canExecuteRef;
 
     private readonly lastStep;
 
@@ -11,21 +11,25 @@ export default class ConditionalChainOfResponsibility extends ChainOfResponsibil
         super(chain.steps);
 
         const lastStep = ChainOfResponsibilityStepFactory.createEmptyStep();
-        this.lastStep = this.setNext(lastStep);
-        this.canExecute = chain.canExecute;
+        this.lastStep = this.setLast(lastStep);
+        this.canExecuteRef = () => chain.canExecute;
+    }
+
+    canExecute(...args: any[]): boolean {
+        const canExecuteRef = this.canExecuteRef();
+        if (typeof canExecuteRef === 'boolean') {
+            return canExecuteRef;
+        }
+        if (typeof canExecuteRef === 'function') {
+            return !!canExecuteRef(...args);
+        }
+        return true;
     }
 
     async execute(...args: any[]): Promise<any> {
-        if (typeof this.canExecute === 'boolean' && !this.canExecute) {
-            return await this.executeLastStep(args);
+        if (this.canExecute(...args)) {
+            return await super.execute(...args);
         }
-        if (typeof this.canExecute === 'function' && !this.canExecute(...args)) {
-            return await this.executeLastStep(args);
-        }
-        return await super.execute(...args);
-    }
-
-    private async executeLastStep(args: any[]): Promise<any> {
         return await this.lastStep.execute(...args);
     }
 }
