@@ -41,4 +41,29 @@ describe('ChainOfResponsibility', () => {
 
         expect(result).toEqual([1, 2, 3]);
     });
+
+    it('should create chain with step interface correctly without setLast method', async () => {
+        class ChainStep {
+            private nextStep?: ChainStep;
+
+            setNext(nextStep: ChainStep) {
+                this.nextStep = nextStep;
+                return nextStep;
+            }
+
+            async execute(): Promise<any> {
+                if (this.nextStep) {
+                    return await this.nextStep.execute();
+                }
+                return await Promise.resolve('test');
+            }
+        }
+        const chain = new ChainOfResponsibility([
+            new ChainStep(),
+            new ChainStep(),
+        ]);
+
+        const result = await chain.execute();
+        expect(result).toEqual('test');
+    });
 });
