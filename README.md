@@ -151,3 +151,57 @@ const step4 = new Step4();
 
 step1.setNext(step2).setNext(step3).setNext(step4);
 ```
+
+### Chain with Condition
+There is a way to execute chain or sub-chain with condition without interrupting whole chain.
+In example below Step1 and Step2 will never be executed, while Step3 will be: 
+```typescript
+const conditionalChain = new ConditionalChainOfResponsibility({
+    chain: [
+        new Step1(),
+        new Step2(),
+    ],
+    canExecute: false,
+});
+
+const chain = useChain([
+    conditionalChain,
+    new Step3(),
+]);
+chain.execute();
+```
+The ```chain``` property can be step, chain, step function or array of them.
+The ```canExecute``` can be boolean value, getter or function which returns a boolean.
+
+```typescript
+export type TChainOfResponsibilityStep = IChainOfResponsibilityStep | IExecuteFuncCallback;
+export type TChainOfResponsibility = TChainOfResponsibilityStep[] | TChainOfResponsibilityStep;
+
+export interface IConditionalChainOfResponsibility {
+    canExecute: ICanExecuteFunc | boolean,
+    chain: TChainOfResponsibility,
+}
+```
+It is also possible to use conditional chain with ```useChain``` function.
+E.g. Step1 will be executed only when canExecute returns true.
+```typescript
+const chain = useChain({
+    chain: new Step1,
+    canExecute: (params) => params.canExecute,
+});
+chain.execute({canExecute: true});
+```
+It also works with sub-chains:
+```typescript
+const chain = useChain([
+    useChain({
+        chain: new Step1,
+        canExecute: (params) => !params.canExecute,
+    }),
+    useChain({
+        chain: new Step2,
+        canExecute: (params) => params.canExecute,
+    }),
+]);
+chain.execute({canExecute: true});
+```
