@@ -7,12 +7,12 @@ export default class ConditionalChainOfResponsibility extends ChainOfResponsibil
 
     private readonly lastStep;
 
-    constructor(chain: IConditionalChainOfResponsibility) {
-        super(chain.steps);
+    constructor(conditionalChain: IConditionalChainOfResponsibility) {
+        super(conditionalChain.chain);
 
         const lastStep = ChainOfResponsibilityStepFactory.createEmptyStep();
         this.lastStep = this.setLast(lastStep);
-        this.canExecuteRef = () => chain.canExecute;
+        this.canExecuteRef = () => conditionalChain.canExecute;
     }
 
     canExecute(...args: any[]): boolean {

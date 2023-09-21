@@ -6,7 +6,7 @@ describe('useChain function with condition steps', () => {
         const chain = useChain([
             useChain({
                 canExecute: false,
-                steps: (execute, data) => {
+                chain: (execute, data) => {
                     data.push(1);
                     return execute(data);
                 },
@@ -17,7 +17,7 @@ describe('useChain function with condition steps', () => {
             },
             useChain({
                 canExecute: () => false,
-                steps: (execute, data) => {
+                chain: (execute, data) => {
                     data.push(3);
                     return execute(data);
                 },
@@ -35,7 +35,7 @@ describe('useChain function with condition steps', () => {
             public canExec = false;
 
             // eslint-disable-next-line class-methods-use-this
-            public steps(execute: (data: any) => any, data: any) {
+            public chain(execute: (data: any) => any, data: any) {
                 data.push(1);
                 return execute(data);
             }

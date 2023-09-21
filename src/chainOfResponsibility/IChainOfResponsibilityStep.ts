@@ -9,5 +9,5 @@ export type TChainOfResponsibility = TChainOfResponsibilityStep[] | TChainOfResp
 
 export interface IConditionalChainOfResponsibility {
     canExecute: ICanExecuteFunc | boolean,
-    steps: TChainOfResponsibility,
+    chain: TChainOfResponsibility,
 }

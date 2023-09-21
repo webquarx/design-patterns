@@ -22,7 +22,7 @@ describe('ConditionalChainOfResponsibility', () => {
 
     it('should execute all steps when canExecute is true', async () => {
         const chain = new ConditionalChainOfResponsibility({
-            steps: [step1, step2],
+            chain: [step1, step2],
             canExecute: true,
         });
         await chain.execute();
@@ -33,7 +33,7 @@ describe('ConditionalChainOfResponsibility', () => {
 
     it('should execute all steps when canExecute is not set', async () => {
         const chain = new ConditionalChainOfResponsibility({
-            steps: [step1, step2],
+            chain: [step1, step2],
         } as unknown as IConditionalChainOfResponsibility);
         await chain.execute();
 
@@ -43,7 +43,7 @@ describe('ConditionalChainOfResponsibility', () => {
 
     it('should not execute any step when canExecute is false', async () => {
         const mockFalseChain: IConditionalChainOfResponsibility = {
-            steps: [step1, step2],
+            chain: [step1, step2],
             canExecute: false,
         };
 
@@ -56,7 +56,7 @@ describe('ConditionalChainOfResponsibility', () => {
 
     it('should execute the last step when canExecute is false', async () => {
         const chain = new ConditionalChainOfResponsibility({
-            steps: [step1, step2],
+            chain: [step1, step2],
             canExecute: false,
         });
         // @ts-expect-error canExecuteRef is private
