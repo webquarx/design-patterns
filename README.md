@@ -13,7 +13,7 @@
 Light-weight library for simple using design patterns for JavaScript and TypeScript projects.
 
 ## Chain Of Responsibility
-Here is a step definition. The method is always asynchronous.
+Here is a step definition. The method ```execute``` is always asynchronous.
 ```typescript
 export default class TestChainStep extends ChainOfResponsibilityStep {
     async execute(params: any) {
@@ -32,12 +32,14 @@ const firstStep = new TestChainStep();
 const secondStep = new TestChainStep();
 const thirdStep = new TestChainStep();
 
-firstStep.setNext(secondStep).setNext(thirdStep);
+firstStep
+    .setNext(secondStep)
+    .setNext(thirdStep);
 
 await firstStep.execute();
 ```
 
-It's possible to focus on constructing a chain, not on definition variable and series of setNext method.
+It's possible to focus on constructing a chain, not on definition of the variables and a series of the ```setNext``` methods.
 ```typescript
 // Simple way
 
@@ -49,11 +51,11 @@ const chain = new ChainOfResponsibility([
 
 await chain.execute();
 ```
-With simple way the method setNext will be called automatically. There is no need to call it for every step when defining a chain.
-Construction order is the order in array for ChainOfResponsibility class, which extends usual ChainOfResponsibilityStep.
+The method ```setNext``` will be called automatically in a simple way. There is no need to call it for every step when defining a chain.
+The order of steps in a chain is the same as in array for constructor of ```ChainOfResponsibility``` class, which extends the usual ```ChainOfResponsibilityStep```.
 
-### Using a Function for Step
-There is a simple way to use function instead of chain step class.
+### Using a Function instead of a Step
+There is a simple way to use a function instead of a chain step class.
 ```typescript
 const chain = new ChainOfResponsibility([
     (execute, param) => {
@@ -65,11 +67,11 @@ const chain = new ChainOfResponsibility([
 
 chain.execute(param);
 ```
-Where **execute** param is a function to call execution for next step.
-It's analog of super.execute() in the class version. 
+The ```execute``` parameter is a function which executes the next step.
+It's analog of ```super.execute()``` in the version of the step class. 
 
 ### Constructing with useChain Function
-If you prefer to use functions instead of classes, there is a way to create chain step or whole chain only with one **useChain** function.
+If you prefer to use functions instead of classes, there is a way to create a chain step or the whole chain using only the ```useChain``` function.
 ```typescript
 const step = useChain(
     (execute, param) => {
@@ -91,8 +93,8 @@ chain.execute(param);
 ```
 
 ### Merging Chains
-Usually there is no way to merge two chains without loosing steps in first one, if there is no link to last step.
-That's why there is the setLast method for adding chains to the end of chain.
+Usually two chains can not be merged without loosing steps in the first one if there is no link to the last step.
+That's why there is the ```setLast``` method for appending chains to the end of a chain.
 ```typescript
 class Step1 extends ChainOfResponsibilityStep {}
 // Step2, Step3, Step4 have the same class definitions...
@@ -108,8 +110,8 @@ chain1.setLast(chain2);
 ```
 
 ### Merging With Nesting
-Merging chains is also working with nesting chains. This forms one long chain.
-It makes possible to construct part of chains in different modules and combine them later into one long chain.
+Merging chains also works with nesting chains. That forms a one long chain.
+It makes possible to construct parts of chains in different modules and combine them later into one long chain.
 
 ```typescript
 class Step1 extends ChainOfResponsibilityStep {}
@@ -127,7 +129,7 @@ const chain = new ChainOfResponsibility([
 ]);
 ```
 
-The same with useChain function, e.g. where sub-chains were created in factory class:
+The ```useChain``` function works the same way, e.g. where sub-chains can be created in the factory class:
 ```typescript
 const chain = useChain([
     useChain([
@@ -142,7 +144,7 @@ const chain = useChain([
 chain.execute(param);
 ```
 
-The result will be the same as:
+The result will be same as:
 ```typescript
 const step1 = new Step1();
 const step2 = new Step2();
@@ -152,9 +154,9 @@ const step4 = new Step4();
 step1.setNext(step2).setNext(step3).setNext(step4);
 ```
 
-### Chain with Condition
-There is a way to execute chain or sub-chain with condition without interrupting whole chain.
-In example below Step1 and Step2 will never be executed, while Step3 will be: 
+### Chain with a Condition
+There is a way to execute a chain or a sub-chain with condition without interrupting the whole chain.
+In the example below ```Step1``` and ```Step2``` will never be executed, while ```Step3``` will be: 
 ```typescript
 const conditionalChain = new ConditionalChainOfResponsibility({
     chain: [
@@ -170,8 +172,8 @@ const chain = useChain([
 ]);
 chain.execute();
 ```
-The ```chain``` property can be step, chain, step function or array of them.
-The ```canExecute``` can be boolean value, getter or function which returns a boolean.
+The ```chain``` property can be a step, a chain, a step function or an array of them.
+The ```canExecute``` can be a boolean value, a getter or a function which returns a boolean.
 
 ```typescript
 export type TChainOfResponsibilityStep = IChainOfResponsibilityStep | IExecuteFuncCallback;
@@ -182,8 +184,8 @@ export interface IConditionalChainOfResponsibility {
     chain: TChainOfResponsibility,
 }
 ```
-It is also possible to use conditional chain with ```useChain``` function.
-E.g. Step1 will be executed only when canExecute returns true.
+It is also possible to use a conditional chain with the ```useChain``` function.
+E.g. ```Step1``` will be executed only when canExecute returns true.
 ```typescript
 const chain = useChain({
     chain: new Step1,
