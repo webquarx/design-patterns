@@ -1,8 +1,5 @@
 import ChainOfResponsibilityStep from './ChainOfResponsibilityStep';
-import IChainOfResponsibilityStep, {
-    TChainOfResponsibility,
-    TChainOfResponsibilityStep,
-} from './IChainOfResponsibilityStep';
+import { TChainOfResponsibility } from './IChainOfResponsibilityStep';
 import ChainOfResponsibilityStepFactory from './ChainOfResponsibilityStepFactory';
 
 export default class ChainOfResponsibility extends ChainOfResponsibilityStep {
@@ -12,23 +9,10 @@ export default class ChainOfResponsibility extends ChainOfResponsibilityStep {
     }
 
     private createChain(steps: TChainOfResponsibility) {
-        if (Array.isArray(steps)) {
-            this.createChainFromArray(steps);
+        const chain = ChainOfResponsibilityStepFactory.createChain(steps);
+        if (!chain) {
             return;
         }
-        this.createChainFromArray([steps]);
-    }
-
-    private createChainFromArray(steps: TChainOfResponsibilityStep[]) {
-        let step: IChainOfResponsibilityStep | null = null;
-        for (let i = 0; i < steps.length; i++) {
-            const nextStep = ChainOfResponsibilityStepFactory.createStep(steps[i]);
-            step = step || this;
-            if (step instanceof ChainOfResponsibilityStep) {
-                step = step.setLast(nextStep);
-            } else {
-                step = step.setNext(nextStep);
-            }
-        }
+        this.setNext(chain);
     }
 }
