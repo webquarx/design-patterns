@@ -7,7 +7,7 @@ export default interface IChainOfResponsibilityStep extends IExecutable {
 export type TChainOfResponsibilityStep = IChainOfResponsibilityStep | IExecuteFuncCallback;
 
 export interface IConditionalChainOfResponsibility extends ICanExecutable {
-    chain: TChainOfResponsibilityStep[] | TChainOfResponsibilityStep,
+    chain: TChainOfResponsibility,
 }
 
 export type TChainOfResponsibilitySteps =
@@ -15,6 +15,5 @@ export type TChainOfResponsibilitySteps =
 
 export type TChainOfResponsibility =
     IConditionalChainOfResponsibility
-    | IConditionalChainOfResponsibility[]
-    | TChainOfResponsibilityStep[]
-    | TChainOfResponsibilityStep;
+    | TChainOfResponsibilityStep
+    | (IConditionalChainOfResponsibility | TChainOfResponsibilityStep)[];
