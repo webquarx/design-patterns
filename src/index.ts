@@ -7,5 +7,5 @@ export type { default as IConditionalChainOfResponsibility } from './chainOfResp
 
 export { default as ChainOfResponsibilityStep } from './chainOfResponsibility/ChainOfResponsibilityStep';
 export { default as ChainOfResponsibility } from './chainOfResponsibility/ChainOfResponsibility';
-export { default as ConditionalChainOfResponsibility } from './chainOfResponsibility/ConditionalChainOfResponsibility';
+export { default as ChainOfResponsibilityConditionalStep } from './chainOfResponsibility/ChainOfResponsibilityConditionalStep';
 export { default as useChain } from './chainOfResponsibility/useChain';

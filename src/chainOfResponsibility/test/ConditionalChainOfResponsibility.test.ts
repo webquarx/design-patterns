@@ -1,6 +1,6 @@
-import ConditionalChainOfResponsibility from '../ConditionalChainOfResponsibility';
 import { IConditionalChainOfResponsibility } from '../IChainOfResponsibilityStep';
 import ChainOfResponsibilityStep from '../ChainOfResponsibilityStep';
+import ChainOfResponsibility from '../ChainOfResponsibility';
 
 class ChainStep extends ChainOfResponsibilityStep {}
 describe('ConditionalChainOfResponsibility', () => {
@@ -21,7 +21,7 @@ describe('ConditionalChainOfResponsibility', () => {
     });
 
     it('should execute all steps when canExecute is true', async () => {
-        const chain = new ConditionalChainOfResponsibility({
+        const chain = new ChainOfResponsibility({
             chain: [step1, step2],
             canExecute: true,
         });
@@ -32,7 +32,7 @@ describe('ConditionalChainOfResponsibility', () => {
     });
 
     it('should execute all steps when canExecute is not set', async () => {
-        const chain = new ConditionalChainOfResponsibility({
+        const chain = new ChainOfResponsibility({
             chain: [step1, step2],
         } as unknown as IConditionalChainOfResponsibility);
         await chain.execute();
@@ -47,7 +47,7 @@ describe('ConditionalChainOfResponsibility', () => {
             canExecute: false,
         };
 
-        const chain = new ConditionalChainOfResponsibility(mockFalseChain);
+        const chain = new ChainOfResponsibility(mockFalseChain);
         await chain.execute();
 
         expect(mockStep1).not.toHaveBeenCalled();
@@ -55,12 +55,12 @@ describe('ConditionalChainOfResponsibility', () => {
     });
 
     it('should execute the last step when canExecute is false', async () => {
-        const chain = new ConditionalChainOfResponsibility({
+        const chain = new ChainOfResponsibility({
             chain: [step1, step2],
             canExecute: false,
         });
         // @ts-expect-error canExecuteRef is private
-        const lastStepSpy = jest.spyOn(chain.lastStep, 'execute');
+        const lastStepSpy = jest.spyOn(chain.nextStep.lastStep, 'execute');
 
         await chain.execute();
 
