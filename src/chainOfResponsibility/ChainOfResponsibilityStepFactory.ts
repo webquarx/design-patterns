@@ -1,12 +1,12 @@
 import IChainOfResponsibilityStep, {
-    TChainOfResponsibilitySteps, TChainOfResponsibility,
+    TChainOfResponsibilityStep, TChainOfResponsibility,
 } from './IChainOfResponsibilityStep';
 import ChainOfResponsibilityExecuteFuncAdapter from './ChainOfResponsibilityExecuteFuncAdapter';
 import ChainOfResponsibilityStep from './ChainOfResponsibilityStep';
 import ChainOfResponsibilityConditionalStep from './ChainOfResponsibilityConditionalStep';
 
 export default class ChainOfResponsibilityStepFactory {
-    static createStep(step: TChainOfResponsibilitySteps): IChainOfResponsibilityStep | null {
+    static createStep(step: TChainOfResponsibilityStep): IChainOfResponsibilityStep | null {
         if (typeof step === 'function') {
             return new ChainOfResponsibilityExecuteFuncAdapter(step);
         }
@@ -29,7 +29,7 @@ export default class ChainOfResponsibilityStepFactory {
         ) as IChainOfResponsibilityStep;
     }
 
-    static createChainFromArray(steps: TChainOfResponsibilitySteps[])
+    static createChainFromArray(steps: TChainOfResponsibilityStep[])
         : IChainOfResponsibilityStep | null {
         let step = ChainOfResponsibilityStepFactory.createStep(steps[0]);
         if (!step) {
