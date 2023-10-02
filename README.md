@@ -117,16 +117,19 @@ It makes possible to construct parts of chains in different modules and combine 
 class Step1 extends ChainOfResponsibilityStep {}
 // Step2, Step3, Step4 have the same class definitions...
 
-const chain = new ChainOfResponsibility([
-    new ChainOfResponsibility([
+const chain1 = new ChainOfResponsibility([
         new Step1(),
         new Step2(),
-    ]),
-    new ChainOfResponsibility([
+]);
+
+const chain2 = new ChainOfResponsibility([
         new Step3(),
         new Step4(),
-    ]),
 ]);
+
+const chain = new ChainOfResponsibility([chain1, chain2]);
+// chain.execute calls execute method from all steps 
+chain.execute(param);
 ```
 
 The ```useChain``` function works the same way, e.g. where sub-chains can be created in the factory class:
@@ -144,21 +147,11 @@ const chain = useChain([
 chain.execute(param);
 ```
 
-The result will be same as:
-```typescript
-const step1 = new Step1();
-const step2 = new Step2();
-const step3 = new Step3();
-const step4 = new Step4();
-
-step1.setNext(step2).setNext(step3).setNext(step4);
-```
-
 ### Chain with a Condition
 There is a way to execute a chain or a sub-chain with condition without interrupting the whole chain.
 In the example below ```Step1``` and ```Step2``` will never be executed, while ```Step3``` will be: 
 ```typescript
-const conditionalChain = new ConditionalChainOfResponsibility({
+const conditionalChain = new ChainOfResponsibility({
     chain: [
         new Step1(),
         new Step2(),
@@ -166,7 +159,7 @@ const conditionalChain = new ConditionalChainOfResponsibility({
     canExecute: false,
 });
 
-const chain = useChain([
+const chain = new ChainOfResponsibility([
     conditionalChain,
     new Step3(),
 ]);
@@ -175,15 +168,6 @@ chain.execute();
 The ```chain``` property can be a step, a chain, a step function or an array of them.
 The ```canExecute``` can be a boolean value, a getter or a function which returns a boolean.
 
-```typescript
-export type TChainOfResponsibilityStep = IChainOfResponsibilityStep | IExecuteFuncCallback;
-export type TChainOfResponsibility = TChainOfResponsibilityStep[] | TChainOfResponsibilityStep;
-
-export interface IConditionalChainOfResponsibility {
-    canExecute: ICanExecuteFunc | boolean,
-    chain: TChainOfResponsibility,
-}
-```
 It is also possible to use a conditional chain with the ```useChain``` function.
 E.g. ```Step1``` will be executed only when canExecute returns true.
 ```typescript
@@ -196,14 +180,14 @@ chain.execute({canExecute: true});
 It also works with sub-chains:
 ```typescript
 const chain = useChain([
-    useChain({
+    {
         chain: new Step1,
         canExecute: (params) => !params.canExecute,
-    }),
-    useChain({
+    },
+    {
         chain: new Step2,
         canExecute: (params) => params.canExecute,
-    }),
+    },
 ]);
 chain.execute({canExecute: true});
 ```
