@@ -16,7 +16,10 @@ export default class ChainOfResponsibilityStepFactory {
                 ? [...step.chain, lastStep]
                 : [step.chain, lastStep];
             const chain = ChainOfResponsibilityStepFactory.createChain(newChain);
-            const conditionalStep = new ChainOfResponsibilityConditionalStep(step, lastStep);
+            const conditionalStep = new ChainOfResponsibilityConditionalStep(
+                step.canExecute,
+                lastStep,
+            );
             conditionalStep.setNext(chain as IChainOfResponsibilityStep);
             return conditionalStep;
         }

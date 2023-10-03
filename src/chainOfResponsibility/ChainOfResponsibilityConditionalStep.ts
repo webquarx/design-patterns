@@ -1,14 +1,14 @@
 import ChainOfResponsibilityStep from './ChainOfResponsibilityStep';
 import IChainOfResponsibilityStep from './IChainOfResponsibilityStep';
-import { ICanExecutable } from '../core/IExecutable';
+import { ICanExecutable, ICanExecuteFunc } from '../core/IExecutable';
 
 export default class ChainOfResponsibilityConditionalStep
     extends ChainOfResponsibilityStep implements ICanExecutable {
-    private readonly canExecuteStep;
-
-    constructor(canExecutable: ICanExecutable, readonly lastStep: IChainOfResponsibilityStep) {
+    constructor(
+        readonly canExecuteStep: ICanExecuteFunc | boolean,
+        readonly lastStep: IChainOfResponsibilityStep,
+    ) {
         super();
-        this.canExecuteStep = canExecutable.canExecute;
     }
 
     canExecute(...args: any[]): boolean {
