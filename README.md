@@ -118,13 +118,13 @@ class Step1 extends ChainOfResponsibilityStep {}
 // Step2, Step3, Step4 have the same class definitions...
 
 const chain1 = new ChainOfResponsibility([
-        new Step1(),
-        new Step2(),
+    new Step1(),
+    new Step2(),
 ]);
 
 const chain2 = new ChainOfResponsibility([
-        new Step3(),
-        new Step4(),
+    new Step3(),
+    new Step4(),
 ]);
 
 const chain = new ChainOfResponsibility([chain1, chain2]);
@@ -166,7 +166,7 @@ const chain = new ChainOfResponsibility([
 chain.execute();
 ```
 The ```chain``` property can be a step, a chain, a step function or an array of them.
-The ```canExecute``` can be a boolean value, a getter or a function which returns a boolean.
+The ```canExecute``` can be a boolean value or a function which returns a boolean.
 
 It is also possible to use a conditional chain with the ```useChain``` function.
 E.g. ```Step1``` will be executed only when canExecute returns true.
