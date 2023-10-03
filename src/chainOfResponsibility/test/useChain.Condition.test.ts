@@ -1,5 +1,4 @@
 import useChain from '../useChain';
-import { IConditionalChainOfResponsibility } from '../IChainOfResponsibilityStep';
 
 describe('useChain function with condition steps', () => {
     it('Should not execute step with false condition', async () => {
@@ -117,31 +116,5 @@ describe('useChain function with condition steps', () => {
         await chain.execute(order);
 
         expect(order).toEqual([1, 2, 3]);
-    });
-
-    it('Should accept canExecute as getter and evaluate it before execute', async () => {
-        class ConditionalChain implements IConditionalChainOfResponsibility {
-            public canExec = false;
-
-            // eslint-disable-next-line class-methods-use-this
-            public chain(execute: (data: any) => any, data: any) {
-                data.push(1);
-                return execute(data);
-            }
-
-            get canExecute() {
-                return this.canExec;
-            }
-        }
-        const step = new ConditionalChain();
-        const chain = useChain(step);
-
-        const order: number[] = [];
-        await chain.execute(order);
-        expect(order).toEqual([]);
-
-        step.canExec = true;
-        await chain.execute(order);
-        expect(order).toEqual([1]);
     });
 });
