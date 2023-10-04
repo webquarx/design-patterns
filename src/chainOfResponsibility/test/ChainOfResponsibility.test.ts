@@ -42,6 +42,18 @@ describe('ChainOfResponsibility', () => {
         expect(result).toEqual([1, 2, 3]);
     });
 
+    it('should skip undefined steps in an chain', async () => {
+        const step1 = new TestStep();
+        const step2 = new TestStep();
+
+        // @ts-expect-error pass undefined
+        const chain = new ChainOfResponsibility([step1, undefined, step2]);
+        await chain.execute(1);
+
+        expect(step1.processedData).toEqual([[1]]);
+        expect(step2.processedData).toEqual([[1]]);
+    });
+
     it('should create chain with step interface correctly without setLast method', async () => {
         class ChainStep {
             private nextStep?: ChainStep;

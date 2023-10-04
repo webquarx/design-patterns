@@ -15,16 +15,14 @@ export default class ChainOfResponsibilityFactory {
 
     private createChainFromArray(steps: TChainOfResponsibilityStep[])
         : IChainOfResponsibilityStep | undefined {
-        let step = this.chainStepFactory.create(steps[0]);
-        const res = step;
+        const firstStep = this.chainStepFactory.create(steps[0]);
 
-        for (let i = 1; i < steps.length; i++) {
-            const nextStep = this.chainStepFactory.create(steps[i]);
-            if (step && nextStep) {
-                step = this.addLastStep(step, nextStep);
-            }
-        }
-        return res;
+        steps.slice(1).reduce((chain, step) => {
+            const currentStep = this.chainStepFactory.create(step);
+            return chain && currentStep ? this.addLastStep(chain, currentStep) : chain;
+        }, firstStep);
+
+        return firstStep;
     }
 
     // eslint-disable-next-line class-methods-use-this
