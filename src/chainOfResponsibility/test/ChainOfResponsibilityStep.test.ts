@@ -45,6 +45,17 @@ describe('ChainOfResponsibilityStep', () => {
         expect(result).toBe(expectedResult);
     });
 
+    it('should return default results', async () => {
+        let result = await step1.execute();
+        expect(result).toBe(undefined);
+
+        result = await step1.execute(1);
+        expect(result).toBe(1);
+
+        result = await step1.execute(1, 2);
+        expect(result).toStrictEqual([1, 2]);
+    });
+
     it('should not execute next step if it is was dropped', async () => {
         step1.setNext();
         const step2ExecuteSpy = jest.spyOn(step2, 'execute');

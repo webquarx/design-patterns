@@ -21,6 +21,9 @@ export default abstract class ChainOfResponsibilityStep implements IChainOfRespo
         if (this.nextStep) {
             return await this.nextStep.execute(...args);
         }
-        return args;
+        if (args.length === 0) {
+            return await Promise.resolve();
+        }
+        return args.length === 1 ? args[0] : args;
     }
 }
