@@ -1,13 +1,13 @@
 import { IExecuteFuncCallback } from '../../core/IExecutable';
-import ChainOfResponsibilityStepFactory from '../ChainOfResponsibilityStepFactory';
 import ChainOfResponsibilityExecuteFuncAdapter from '../ChainOfResponsibilityExecuteFuncAdapter';
 import IChainOfResponsibilityStep from '../IChainOfResponsibilityStep';
+import ChainStepFactory from '../factory/ChainStepFactory';
 
 describe('ChainOfResponsibilityStepFactory', () => {
     it('should create a ChainOfResponsibilityExecuteFuncAdapter for a function step', () => {
         const funcStep: IExecuteFuncCallback = jest.fn();
 
-        const result = ChainOfResponsibilityStepFactory.createStep(funcStep);
+        const result = new ChainStepFactory().create(funcStep);
 
         expect(result).toBeInstanceOf(ChainOfResponsibilityExecuteFuncAdapter);
     });
@@ -18,7 +18,7 @@ describe('ChainOfResponsibilityStepFactory', () => {
             setNext: () => nonFuncStep,
         };
 
-        const result = ChainOfResponsibilityStepFactory.createStep(nonFuncStep);
+        const result = new ChainStepFactory().create(nonFuncStep);
 
         expect(result).toBe(nonFuncStep);
     });

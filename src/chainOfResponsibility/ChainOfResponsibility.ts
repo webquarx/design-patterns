@@ -1,6 +1,6 @@
 import ChainOfResponsibilityStep from './ChainOfResponsibilityStep';
 import { TChainOfResponsibility } from './IChainOfResponsibilityStep';
-import ChainOfResponsibilityStepFactory from './ChainOfResponsibilityStepFactory';
+import ChainOfResponsibilityFactory from './ChainOfResponsibilityFactory';
 
 export default class ChainOfResponsibility extends ChainOfResponsibilityStep {
     constructor(steps: TChainOfResponsibility) {
@@ -9,7 +9,7 @@ export default class ChainOfResponsibility extends ChainOfResponsibilityStep {
     }
 
     private createChain(steps: TChainOfResponsibility) {
-        const chain = ChainOfResponsibilityStepFactory.createChain(steps);
+        const chain = new ChainOfResponsibilityFactory().createChain(steps);
         if (!chain) {
             return;
         }
