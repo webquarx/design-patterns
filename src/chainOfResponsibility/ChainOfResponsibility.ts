@@ -9,7 +9,7 @@ export default class ChainOfResponsibility extends ChainOfResponsibilityStep {
     }
 
     private createChain(steps: TChainOfResponsibility) {
-        const chain = new ChainOfResponsibilityFactory().createChain(steps);
+        const chain = new ChainOfResponsibilityFactory().create(steps);
         if (!chain) {
             return;
         }

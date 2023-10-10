@@ -9,8 +9,15 @@ export default class ChainOfResponsibilityFactory {
 
     constructor() {
         this.chainStepFactory = new ChainStepFactory(
-            (steps: TChainOfResponsibility) => this.createChain(steps),
+            (steps: TChainOfResponsibility) => this.create(steps),
         );
+    }
+
+    create(steps: TChainOfResponsibility): IChainOfResponsibilityStep | undefined {
+        if (Array.isArray(steps)) {
+            return this.createChainFromArray(steps);
+        }
+        return this.createChainFromArray([steps]);
     }
 
     private createChainFromArray(steps: TChainOfResponsibilityStep[])
@@ -31,12 +38,5 @@ export default class ChainOfResponsibilityFactory {
             return step.setLast(nextStep);
         }
         return step.setNext(nextStep);
-    }
-
-    createChain(steps: TChainOfResponsibility): IChainOfResponsibilityStep | undefined {
-        if (Array.isArray(steps)) {
-            return this.createChainFromArray(steps);
-        }
-        return this.createChainFromArray([steps]);
     }
 }
