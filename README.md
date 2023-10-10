@@ -172,7 +172,7 @@ It is also possible to use a conditional chain with the ```useChain``` function.
 E.g. ```Step1``` will be executed only when canExecute returns true.
 ```typescript
 const chain = useChain({
-    chain: new Step1,
+    chain: new Step1(),
     canExecute: (params) => params.canExecute,
 });
 chain.execute({canExecute: true});
@@ -181,11 +181,11 @@ It also works with sub-chains:
 ```typescript
 const chain = useChain([
     {
-        chain: new Step1,
+        chain: new Step1(),
         canExecute: (params) => !params.canExecute,
     },
     {
-        chain: new Step2,
+        chain: new Step2(),
         canExecute: (params) => params.canExecute,
     },
 ]);
