@@ -151,16 +151,14 @@ chain.execute(param);
 There is a way to execute a chain or a sub-chain with condition without interrupting the whole chain.
 In the example below ```Step1``` and ```Step2``` will never be executed, while ```Step3``` will be: 
 ```typescript
-const conditionalChain = new ChainOfResponsibility({
-    chain: [
-        new Step1(),
-        new Step2(),
-    ],
-    canExecute: false,
-});
-
 const chain = new ChainOfResponsibility([
-    conditionalChain,
+    {
+        chain: [
+            new Step1(),
+            new Step2(),
+        ],
+        canExecute: false,
+    },
     new Step3(),
 ]);
 chain.execute();
@@ -168,7 +166,7 @@ chain.execute();
 The ```chain``` property can be a step, a chain, a step function or an array of them.
 The ```canExecute``` can be a boolean value or a function which returns a boolean.
 
-It is also possible to use a conditional chain with the ```useChain``` function.
+It is also possible to use a conditional chain with the ```useChain``` function or the ```ChainOfResponsibility``` class.
 E.g. ```Step1``` will be executed only when canExecute returns true.
 ```typescript
 const chain = useChain({
@@ -190,4 +188,28 @@ const chain = useChain([
     },
 ]);
 chain.execute({canExecute: true});
+```
+
+There is **invalid** usage of ```canExecute``` in the conditional chain, which can lead to a typical issue.
+When declaring the context parameter before the chain, calculating it in the previous step, and using it in the next step, the calculation of ```canExecute``` will be made before the conditional chain execution, and the calculation result of the previous step will not be used.
+Use the ```canExecute``` function to avoid this issue.
+The example below demonstrates the problem:
+```typescript
+const context = {canExecute: true};
+
+const chain = useChain([
+    (execute, param) => {
+        param.canExecute = false;
+        return execute(context);
+    },
+    // Invalid use of the context parameter
+    {
+        chain: new Step1(),
+        // `canExecute` is true! It was declared as true and was not calculated
+        canExecute: context.canExecute, // use a function instead
+        // canExecute: (param) => param.canExecute,
+    },
+]);
+
+chain.execute(context);
 ```
