@@ -213,3 +213,90 @@ const chain = useChain([
 
 chain.execute(context);
 ```
+
+## Command
+Here is a command definition. The ```execute``` method is always _asynchronous_ and _abstract_, requiring a definition.
+
+```typescript
+class TestCommand extends Command {
+    constructor(readonly param: object) {
+        super();
+    }
+
+    async execute() {
+        return this.param;
+    }
+}
+```
+
+A typical Command instance does not accept parameters in its ```execute``` method, which helps to make the object more independent of the context, although such a capability is retained.
+```typescript
+class TestCommand extends Command {
+    async execute(params) {
+        return params;
+    }
+}
+```
+
+### Constructing a Command
+The Command pattern is typically used to encapsulate requests as objects, separating the request sender from its receiver. Thus, operation parameters are usually passed through the Command class constructor when creating the object.
+There are two ways to construct a command.
+```typescript
+// Classic way
+class TestCommand extends Command {
+    private setValue: (value: string) => string;
+    private value: string;
+
+    constructor(
+        setValue: (value: string) => string,
+        value: string,
+    ) {
+        super();
+        this.setValue = setValue;
+        this.value = value;
+    }
+
+    async execute() {
+        return this.setValue(this.value);
+    }
+}
+
+const cmd = new TestCommand(
+    (value: string) => value,
+    'test',
+);
+await cmd.execute();
+```
+
+It's possible to focus on writing command execution without the need to define class properties since they will be automatically defined.
+```typescript
+// Simple way
+class TestCommand extends Command<{
+    setValue: (value: string) => string,
+    value: string,
+}> {
+    async execute() {
+        return this.setValue(this.value);
+    }
+}
+
+const cmd = new TestCommand({
+    setValue: (value: string) => value,
+    value: 'test',
+});
+await cmd.execute();
+```
+The base Command class provides creation, type control, and value setting for constructor parameters.
+However, be careful and do not pass object with ```execute``` and ```canExecute``` keys to the constructor, as it's prohibited.
+
+### Command with a Condition
+There is a way to prevent the execution of a command if it is not allowed. To do this, you can override the ```canExecute``` method by inheriting from the Command class.
+The ```canExecute``` method returns true by default. The ```params``` will be the same as for ```execute``` method.
+
+```typescript
+class TestCommand extends Command {
+    canExecute(params) {
+        return !!params || true;
+    }
+}
+```
