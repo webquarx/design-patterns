@@ -8,3 +8,7 @@ export type { default as IConditionalChainOfResponsibility } from './chainOfResp
 export { default as ChainOfResponsibilityConditionalStep } from './chainOfResponsibility/ChainOfResponsibilityConditionalStep';
 export { default as ChainOfResponsibility } from './chainOfResponsibility/ChainOfResponsibility';
 export { default as useChain } from './chainOfResponsibility/useChain';
+
+// Command
+export type { default as ICommand } from './command/ICommand';
+export { default as Command } from './command/Command';
