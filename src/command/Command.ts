@@ -5,7 +5,7 @@ interface Command<T extends object> extends T {}
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 abstract class Command<T extends object = NonNullable<unknown>> implements ICommand {
-    protected constructor(props?: T) {
+    constructor(props?: T) {
         if (props) {
             Object.assign(this, props);
         }
