@@ -12,3 +12,4 @@ export { default as useChain } from './chainOfResponsibility/useChain';
 // Command
 export type { default as ICommand } from './command/ICommand';
 export { default as Command } from './command/Command';
+export { useCommand } from './command/useCommand';
