@@ -1,6 +1,14 @@
 import { useCommand } from '../useCommand';
 
 describe('useCommand', () => {
+    it('should define command from function without props', async () => {
+        const cmd = useCommand(
+            async () => 'test',
+        );
+        const res = await cmd.execute();
+        expect(res).toEqual('test');
+    });
+
     it('should define command from function with props as param', async () => {
         const cmd = useCommand<{ foo: string }>(
             async function (this: { foo: string }, value: string) {
