@@ -1,4 +1,5 @@
 import IExecutable, { ICanExecutable, IExecuteFuncCallback } from '../core/IExecutable';
+import ICommand from '../command/ICommand';
 
 export default interface IChainOfResponsibilityStep extends IExecutable {
     setNext(nextStep?: IChainOfResponsibilityStep): IChainOfResponsibilityStep;
@@ -9,7 +10,10 @@ export interface IConditionalChainOfResponsibility extends ICanExecutable {
 }
 
 export type TChainOfResponsibilityStep =
-    IChainOfResponsibilityStep | IExecuteFuncCallback | IConditionalChainOfResponsibility;
+    IChainOfResponsibilityStep
+    | IExecuteFuncCallback
+    | IConditionalChainOfResponsibility
+    | ICommand;
 
 export type TChainOfResponsibility =
     TChainOfResponsibilityStep

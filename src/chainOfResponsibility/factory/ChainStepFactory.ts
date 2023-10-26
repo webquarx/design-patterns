@@ -6,6 +6,7 @@ import { IChainOfResponsibilityStepFactory } from './IChainOfResponsibilityStepF
 import ExecuteFuncStepFactory from './ExecuteFuncStepFactory';
 import ConditionalChainStepFactory from './ConditionalChainStepFactory';
 import ExistingChainStepFactory from './ExistingChainStepFactory';
+import CommandChainStepFactory from './CommandChainStepFactory';
 
 export default class ChainStepFactory {
     constructor(
@@ -31,6 +32,9 @@ export default class ChainStepFactory {
         }
         if (step && 'setNext' in step && 'execute' in step) {
             return new ExistingChainStepFactory(step);
+        }
+        if (step && 'execute' in step) {
+            return new CommandChainStepFactory(step);
         }
         return undefined;
     }

@@ -1,5 +1,6 @@
 import useChain from '../useChain';
 import ChainOfResponsibilityStep from '../ChainOfResponsibilityStep';
+import { useCommand } from '../../command/useCommand';
 
 describe('useChain function', () => {
     it('should create chain step from a function', async () => {
@@ -74,5 +75,26 @@ describe('useChain function', () => {
         await chain1.execute(order);
 
         expect(order).toEqual([1, 2, 3, 4]);
+    });
+
+    it('should create chain step from command', async () => {
+        type Props = { foo: number };
+        const incCommand = useCommand<Props>(
+            async function (this: Props, context: { sum: number }) {
+                context.sum += this.foo;
+            },
+            { foo: 1 },
+        );
+        const decCommand = useCommand({
+            execute: async (context) => context.sum--,
+            canExecute: () => false,
+        });
+        const chain = useChain([
+            decCommand,
+            incCommand,
+        ]);
+        const context = { sum: 1 };
+        await chain.execute(context);
+        expect(context.sum).toEqual(2);
     });
 });
