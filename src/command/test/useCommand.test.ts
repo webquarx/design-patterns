@@ -1,4 +1,6 @@
 import { useCommand } from '../useCommand';
+import useChain from '../../chainOfResponsibility/useChain';
+import { IExecuteFunc } from '../../core/IExecutable';
 
 describe('useCommand', () => {
     it('should define command from function without props', async () => {
@@ -74,5 +76,24 @@ describe('useCommand', () => {
         const cmd = useCommand<Bar>(obj, props);
         const res = await cmd.execute();
         expect(res).toEqual('default!');
+    });
+
+    it('should return command for chain of responsibility step', async () => {
+        type Context = { foo: number };
+        const incrementFn = (execute: IExecuteFunc, context: Context) => {
+            context.foo++;
+            return execute(context);
+        };
+        const chain = useChain([
+            incrementFn,
+            {
+                chain: incrementFn,
+                canExecute: () => false,
+            },
+            incrementFn,
+        ]);
+        const cmd = useCommand(chain);
+        const res = await cmd.execute({ foo: 0 });
+        expect(res.foo).toEqual(2);
     });
 });
