@@ -219,12 +219,8 @@ Here is a command definition. The ```execute``` method is always _asynchronous_ 
 
 ```typescript
 class TestCommand extends Command {
-    constructor(readonly param: object) {
-        super();
-    }
-
-    async execute() {
-        return this.param;
+    async execute(params) {
+        return params;
     }
 }
 ```
@@ -232,8 +228,12 @@ class TestCommand extends Command {
 A typical Command instance does not accept parameters in its ```execute``` method, which helps to make the object more independent of the context, although such a capability is retained.
 ```typescript
 class TestCommand extends Command {
-    async execute(params) {
-        return params;
+    constructor(readonly param: object) {
+        super();
+    }
+
+    async execute() {
+        return this.param;
     }
 }
 ```
@@ -299,4 +299,77 @@ class TestCommand extends Command {
         return !!params || true;
     }
 }
+```
+
+### Constructing with useCommand Function
+There is a way to create a command using only the ```useCommand``` function.
+The first parameter can be an ```execute``` function.
+
+```typescript
+const cmd = useCommand(
+    async (param) => param,
+);
+await cmd.execute('test');
+```
+
+Properties can also be specified in a manner similar to how it's done in class definitions.
+Pass the second parameter for properties within the ```this``` object accessible in the ```execute``` function.  
+
+Note: arrow function should not be used for ```execute```, as it does not allow access to ```this``` within property definitions.
+```typescript
+const cmd = useCommand<{ value: number }>(
+    async function (this: { value: number }, param: number) {
+        this.value += param;
+        console.log(this.value); // 2
+    },
+    { value: 1 },
+);
+await cmd.execute(1);
+```
+
+The first parameter can be an object with ```execute``` and ```canExecute``` definitions.
+```typescript
+const cmd = useCommand({
+    execute: async (param) => param,
+    canExecute: () => false,
+});
+if (cmd.canExecute && cmd.canExecute()) {
+    await cmd.execute('test'); // will be called
+}
+```
+
+### Merging object properties with useCommand
+Pass an object to ```useCommand``` which, in the ```execute``` function, will have access to its properties via ```this```.
+
+Note: do not define an object directly in the useCommand function parameter, as it may result in a TypeScript type casting error. To circumvent this, assign the object to a variable one line above.
+```typescript
+const obj = {
+    foo: 'test',
+    async execute() {
+        return this.foo;
+    },
+};
+const cmd = useCommand(obj);
+await cmd.execute();
+```
+
+It's possibly to merge object properties with properties passed to useCommand and access them in the ```execute``` function.
+```typescript
+type Foo = { foo: string };
+type Bar = { bar: string };
+
+const obj = {
+    foo: 'default',
+    async execute(this: Foo & Bar) {
+        return this.foo + this.bar;
+    },
+};
+const cmd = useCommand<Bar>(obj, { bar: '!' });
+const res = await cmd.execute();
+```
+
+The ```obj.foo``` stores the default value, which value can be overridden with ```props``` object in the ```useCommand``` function.
+```typescript
+// ... example above
+const cmd = useCommand<Bar>(obj, { bar: '!', foo: 'test' });
 ```
