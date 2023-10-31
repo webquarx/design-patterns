@@ -214,6 +214,31 @@ const chain = useChain([
 chain.execute(context);
 ```
 
+### Using the Command as a Chain Of Responsibility Step
+A command can be used as a chain of responsibility step by using the ```useChain``` function.
+The parameters of the step's `execute` method will be passed as parameters to the `canExecute` and `execute` methods of the command.
+
+```typescript
+type Props = { foo: number };
+const decCommand = useCommand({
+    execute: async (context) => context.sum--,
+    canExecute: () => false,
+});
+const incCommand = useCommand<Props>(
+    async function (this: Props, context: { sum: number }) {
+        context.sum += this.foo;
+    },
+    { foo: 1 }, // increment by 1
+);
+const chain = useChain([
+    decCommand,
+    incCommand,
+]);
+const context = { sum: 1 };
+await chain.execute(context);
+console.log(context.sum); // 2
+```
+
 ## Command
 Here is a command definition. The ```execute``` method is always _asynchronous_ and _abstract_, requiring a definition.
 
@@ -373,3 +398,23 @@ The ```obj.foo``` stores the default value, which value can be overridden with `
 // ... example above
 const cmd = useCommand<Bar>(obj, { bar: '!', foo: 'test' });
 ```
+
+### Using the Chain Of Responsibility as a Command
+A chain of responsibility can be employed as a command by calling the ```useCommand``` function, with the first step of the chain passed into it.
+
+The parameters of the execute method of the command are passed as parameters to the execute method of the chain step.
+```typescript
+import console = require('console');
+import {useCommand} from './useCommand';
+
+const chain = useChain(
+    (execute, context) => console.log(context.foo) // test
+);
+const cmd = useCommand(chain);
+await cmd.execute({foo: 'test'});
+```
+One of possible scenario is post-processing after a certain action, for example, the first step in the chain makes a request, and the next one processes the response and adapts it to a common interface.
+
+Several such chains can be executed simultaneously by encapsulating each one within a command and using an Invoker e.g. for asynchronous execution.
+
+As result, the caller's side will be completely abstracted from data retrieval and the handling of specific responses.
