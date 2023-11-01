@@ -404,9 +404,6 @@ A chain of responsibility can be employed as a command by calling the ```useComm
 
 The parameters of the execute method of the command are passed as parameters to the execute method of the chain step.
 ```typescript
-import console = require('console');
-import {useCommand} from './useCommand';
-
 const chain = useChain(
     (execute, context) => console.log(context.foo) // test
 );
