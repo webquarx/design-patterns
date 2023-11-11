@@ -17,15 +17,21 @@ export default class ConditionalChainStepFactory implements IChainOfResponsibili
 
     create(): IChainOfResponsibilityStep {
         const { lastStep } = this;
-        const { chain, canExecute } = this.step;
+        const { chain, elseChain } = this.step;
 
         const newChain = this.createChainArray(chain);
         newChain.push(lastStep);
         const conditionalChain = this.createChain(newChain);
         const conditionalStep = new ChainOfResponsibilityConditionalStep(
-            canExecute,
+            this.step.canExecute,
             lastStep,
         );
+        if (elseChain) {
+            lastStep.setNext(this.createChain({
+                chain: elseChain,
+                canExecute: () => !conditionalStep.canExecuteState,
+            }));
+        }
         conditionalStep.setNext(conditionalChain as IChainOfResponsibilityStep);
         return conditionalStep;
     }

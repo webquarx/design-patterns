@@ -7,6 +7,7 @@ export default interface IChainOfResponsibilityStep extends IExecutable {
 
 export interface IConditionalChainOfResponsibility extends ICanExecutable {
     chain: TChainOfResponsibility,
+    elseChain?: TChainOfResponsibility,
 }
 
 export type TChainOfResponsibilityStep =

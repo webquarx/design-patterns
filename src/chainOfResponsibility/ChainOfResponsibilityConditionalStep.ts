@@ -3,6 +3,8 @@ import IChainOfResponsibilityStep from './IChainOfResponsibilityStep';
 import { ICanExecuteFunc } from '../core/IExecutable';
 
 export default class ChainOfResponsibilityConditionalStep extends ChainOfResponsibilityStep {
+    canExecuteState?: boolean;
+
     constructor(
         readonly canExecuteStep: ICanExecuteFunc | boolean,
         readonly lastStep: IChainOfResponsibilityStep,
@@ -22,7 +24,8 @@ export default class ChainOfResponsibilityConditionalStep extends ChainOfRespons
     }
 
     async execute(...args: any[]): Promise<any> {
-        if (this.canExecute(...args)) {
+        this.canExecuteState = this.canExecute(...args);
+        if (this.canExecuteState) {
             return await super.execute(...args);
         }
         return await this.lastStep.execute(...args);
