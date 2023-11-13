@@ -180,13 +180,23 @@ It also works with sub-chains:
 const chain = useChain([
     {
         chain: new Step1(),
-        canExecute: (params) => !params.canExecute,
+        canExecute: (params) => params.canExecute,
     },
     {
         chain: new Step2(),
-        canExecute: (params) => params.canExecute,
+        canExecute: (params) => !params.canExecute,
     },
 ]);
+chain.execute({canExecute: true});
+```
+
+The example can be made simpler by using ```elseChain```. If the canExecute condition is ```false```, the chain declared with the ```elseChain``` property will be executed. This property is optional.
+```typescript
+const chain = useChain({
+    chain: new Step1(),
+    elseChain: new Step2(),
+    canExecute: (params) => params.canExecute,
+});
 chain.execute({canExecute: true});
 ```
 
@@ -222,7 +232,7 @@ The parameters of the step's `execute` method will be passed as parameters to th
 type Props = { foo: number };
 const decCommand = useCommand({
     execute: async (context) => context.sum--,
-    canExecute: () => false,
+    canExecute: () => false, // command will not be executed
 });
 const incCommand = useCommand<Props>(
     async function (this: Props, context: { sum: number }) {
@@ -410,8 +420,25 @@ const chain = useChain(
 const cmd = useCommand(chain);
 await cmd.execute({foo: 'test'});
 ```
-One of possible scenario is post-processing after a certain action, for example, the first step in the chain makes a request, and the next one processes the response and adapts it to a common interface.
+One possible scenario for using a chain as a command is for post-processing after a specific action. For instance, the first step in the chain could involve making a request, and the subsequent step could handle processing the response and adapting it to a common interface.
 
 Several such chains can be executed simultaneously by encapsulating each one within a command and using an Invoker e.g. for asynchronous execution.
 
 As result, the caller's side will be completely abstracted from data retrieval and the handling of specific responses.
+
+By default, a chain doesn't support the ```canExecute``` method, whereas a command does.
+Here is an example of how to declare a command with a chain and a ```canExecute``` method, including an additional chain step with a ```canExecute``` function:
+```typescript
+// a chain declared elsewhere
+const someChain = useChain(
+    (execute, context) => console.log(context.foo) // test
+);
+// ...
+const cmd = useCommand(
+    useChain({
+        chain: someChain,
+        canExecute: () => true,
+    }),
+);
+await cmd.execute({foo: 'test'});
+```
