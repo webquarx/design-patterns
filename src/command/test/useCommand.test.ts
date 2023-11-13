@@ -96,4 +96,27 @@ describe('useCommand', () => {
         const res = await cmd.execute({ foo: 0 });
         expect(res.foo).toEqual(2);
     });
+
+    it('should execute command for conditional chain of responsibility step with elseChain', async () => {
+        type Context = { foo: number };
+        const incrementFn = (execute: IExecuteFunc, context: Context) => {
+            context.foo++;
+            return execute(context);
+        };
+        const decrementFn = (execute: IExecuteFunc, context: Context) => {
+            context.foo--;
+            return execute(context);
+        };
+        const chain = useChain([
+            {
+                chain: incrementFn,
+                elseChain: decrementFn,
+                canExecute: () => false,
+            },
+            incrementFn,
+        ]);
+        const cmd = useCommand(chain);
+        const res = await cmd.execute({ foo: 1 });
+        expect(res.foo).toEqual(1);
+    });
 });
