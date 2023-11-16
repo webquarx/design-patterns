@@ -1,5 +1,5 @@
 export interface ICanExecuteFunc {
-    (...args: any[]): boolean;
+    (...args: any[]): Promise<boolean> | boolean;
 }
 
 export interface ICanExecutable {

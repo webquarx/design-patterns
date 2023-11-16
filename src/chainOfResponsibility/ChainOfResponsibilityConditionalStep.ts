@@ -12,25 +12,25 @@ export default class ChainOfResponsibilityConditionalStep extends ChainOfRespons
         super();
     }
 
-    get canExecuteState() {
+    get canExecuteState(): undefined | boolean {
         return this.canExecuteResult;
     }
 
     async execute(...args: any[]): Promise<any> {
-        this.canExecuteResult = this.canExecute(...args);
+        this.canExecuteResult = await this.canExecute(...args);
         if (this.canExecuteResult) {
             return await super.execute(...args);
         }
         return await this.executeLast(...args);
     }
 
-    private canExecute(...args: any[]): boolean {
+    private async canExecute(...args: any[]): Promise<boolean> {
         const { canExecuteFunc } = this;
         if (typeof canExecuteFunc === 'boolean') {
             return canExecuteFunc;
         }
         if (typeof canExecuteFunc === 'function') {
-            return !!canExecuteFunc(...args);
+            return await canExecuteFunc(...args);
         }
         return true;
     }
