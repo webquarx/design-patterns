@@ -164,7 +164,7 @@ const chain = new ChainOfResponsibility([
 chain.execute();
 ```
 The ```chain``` property can be a step, a chain, a step function or an array of them.
-The ```canExecute``` can be a boolean value or a function which returns a boolean.
+The ```canExecute``` can be a boolean value or a _synchronous_ or _asynchronous_ function which returns a boolean.
 
 It is also possible to use a conditional chain with the ```useChain``` function or the ```ChainOfResponsibility``` class.
 E.g. ```Step1``` will be executed only when canExecute returns true.
@@ -223,10 +223,25 @@ const chain = useChain([
 
 chain.execute(context);
 ```
+There is an example using an asynchronous ```canExecute``` method.
+The entire chain's execution will be paused until the asynchronous ```canExecute``` method of the chain step is complete.
+```typescript
+const chain = useChain({
+    chain: new Step1(),
+    canExecute: () => new Promise<boolean>((resolve) => {
+        setTimeout(() => {
+            resolve(true);
+        }, 50);
+    }),
+});
+await chain.execute();
+```
 
 ### Using the Command as a Chain Of Responsibility Step
 A command can be used as a chain of responsibility step by using the ```useChain``` function.
 The parameters of the step's `execute` method will be passed as parameters to the `canExecute` and `execute` methods of the command.
+
+Additionally, asynchronous ```canExecute``` method for command is supported.
 
 ```typescript
 type Props = { foo: number };
@@ -335,6 +350,7 @@ class TestCommand extends Command {
     }
 }
 ```
+The ```canExecute``` method of a command can also be declared as asynchronous.
 
 ### Constructing with useCommand Function
 There is a way to create a command using only the ```useCommand``` function.
@@ -362,7 +378,7 @@ const cmd = useCommand<{ value: number }>(
 await cmd.execute(1);
 ```
 
-The first parameter can be an object with ```execute``` and ```canExecute``` definitions.
+The first parameter can be an object with ```execute``` and ```canExecute``` definitions. Both methods can be asynchronous.
 ```typescript
 const cmd = useCommand({
     execute: async (param) => param,
