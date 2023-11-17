@@ -39,6 +39,25 @@ describe('useCommand', () => {
         expect(res).toEqual('!');
     });
 
+    it('should await for command object with async canExecute', async () => {
+        const executeCalls: number[] = [];
+        const cmd = useCommand({
+            execute: async () => {
+                executeCalls.push(2);
+                return 'test';
+            },
+            canExecute: () => new Promise<boolean>((resolve) => {
+                setTimeout(() => {
+                    executeCalls.push(1);
+                    resolve(false);
+                }, 50);
+            }),
+        });
+        const res = await cmd.canExecute() ? await cmd.execute() : '!';
+        expect(res).toEqual('!');
+        expect(executeCalls).toEqual([1]);
+    });
+
     it('should return command for object with literal props in this', async () => {
         const obj = {
             foo: 'test',

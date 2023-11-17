@@ -8,7 +8,7 @@ export default class ChainOfResponsibilityCommandAdapter extends ChainOfResponsi
 
     async execute(...args: any[]): Promise<any> {
         if (typeof this.command.canExecute !== 'function'
-            || this.command.canExecute(...args)
+            || await this.command.canExecute(...args)
         ) {
             await this.command.execute(...args);
         }

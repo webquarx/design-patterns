@@ -12,7 +12,7 @@ abstract class Command<T extends object = NonNullable<unknown>> implements IComm
     }
 
     // eslint-disable-next-line class-methods-use-this
-    canExecute(): boolean {
+    canExecute(): Promise<boolean> | boolean {
         return true;
     }
 

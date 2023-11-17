@@ -1,6 +1,7 @@
 import useChain from '../useChain';
 import ChainOfResponsibilityStep from '../ChainOfResponsibilityStep';
 import { useCommand } from '../../command/useCommand';
+import Command from '../../command/Command';
 
 describe('useChain function', () => {
     it('should create chain step from a function', async () => {
@@ -96,5 +97,46 @@ describe('useChain function', () => {
         const context = { sum: 1 };
         await chain.execute(context);
         expect(context.sum).toEqual(2);
+    });
+
+    it('should create chain step command with async canExecute method', async () => {
+        const context: string[] = [];
+        const executeCalls: string[] = [];
+        class TestCommand extends Command {
+            // eslint-disable-next-line class-methods-use-this
+            async canExecute() {
+                return await new Promise<boolean>((resolve) => {
+                    setTimeout(() => {
+                        executeCalls.push('class canExecute');
+                        resolve(false);
+                    }, 50);
+                });
+            }
+
+            // eslint-disable-next-line class-methods-use-this
+            async execute(res: string[]) {
+                executeCalls.push('class execute');
+                res.push('test class');
+            }
+        }
+        const chain = useChain([
+            new TestCommand(),
+            {
+                canExecute: () => new Promise<boolean>((resolve) => {
+                    setTimeout(() => {
+                        executeCalls.push('object canExecute');
+                        resolve(true);
+                    }, 50);
+                }),
+                execute: async (res: string[]) => {
+                    executeCalls.push('object execute');
+                    res.push('test object');
+                },
+            },
+        ]);
+
+        await chain.execute(context);
+        expect(context).toEqual(['test object']);
+        expect(executeCalls).toEqual(['class canExecute', 'object canExecute', 'object execute']);
     });
 });
