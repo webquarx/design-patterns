@@ -458,3 +458,29 @@ const cmd = useCommand(
 );
 await cmd.execute({foo: 'test'});
 ```
+
+## Invoker
+Invoker allows the creation of a queue with commands for sequential or parallel execution.
+
+### Constructing an Invoker
+It is possible to create an Invoker with just one command:
+```typescript
+const command = new TestCommand();
+const invoker = new Invoker(command);
+```
+
+Alternatively, you can create an Invoker with an array of commands:
+```typescript
+const invoker = new Invoker([
+    new TestCommand(),
+    useCommand(async (param) => param),
+]);
+```
+
+You can also create an Invoker from an array with any data and the ```createCommand``` function:
+```typescript
+const invoker = new Invoker(
+    [1, 2, 3],
+    (item) => new TestCommand(item),
+);
+```
