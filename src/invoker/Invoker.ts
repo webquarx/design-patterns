@@ -1,5 +1,6 @@
 import { InvokerTask, ICreateCommandFunc, TInvokerTask } from './TInvoker';
 import InvokerTaskFactory from './factory/InvokerTaskFactory';
+import Parallels from './Parallels';
 
 export default class Invoker {
     private readonly tasks: InvokerTask[] = [];
@@ -10,5 +11,10 @@ export default class Invoker {
 
     constructor(items: TInvokerTask | TInvokerTask[] | any[], createCommand?: ICreateCommandFunc) {
         this.tasks = new InvokerTaskFactory().create(items, createCommand);
+    }
+
+    execute(limit?: number): Promise<any[]> {
+        const parallels = new Parallels(this.tasks);
+        return parallels.execute(limit);
     }
 }
