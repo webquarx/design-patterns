@@ -1,21 +1,23 @@
 import { InvokerTask } from './TInvoker';
 
 export default class Parallel {
-    private limit?: number;
-
     private currentIndex: number = 0;
 
     private runningTasks: number = 0;
 
     private results: any[] = [];
 
+    private args: any[] = [];
+
     private resolvePromise!: (value: (any[] | PromiseLike<any[]>)) => void;
 
-    constructor(private readonly tasks: InvokerTask[]) {
-    }
+    constructor(
+        private readonly tasks: InvokerTask[],
+        private limit?: number,
+    ) {}
 
-    execute(limit?: number): Promise<any[]> {
-        this.limit = limit;
+    execute(...args: any[]): Promise<any[]> {
+        this.args = args;
 
         return new Promise<any[]>((resolve) => {
             this.resolvePromise = resolve;
@@ -44,7 +46,7 @@ export default class Parallel {
         const task = this.tasks[index];
 
         try {
-            this.results[index] = await task.command.execute();
+            this.results[index] = await task.command.execute(...this.args);
         } finally {
             this.runningTasks--;
             this.runNextTask();

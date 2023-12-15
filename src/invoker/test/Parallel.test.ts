@@ -45,17 +45,17 @@ describe('Parallel', () => {
         expect(results).toEqual([1, 2, 3]);
     });
 
-    it('should execute tasks with a limit', async () => {
+    it('should execute tasks with arguments', async () => {
         const tasks = [
-            { command: new MockCommand(1) },
-            { command: new MockCommand(2) },
-            { command: new MockCommand(3) },
+            { command: { execute: async (val1: number, val2: number) => val1 + val2 } },
+            { command: { execute: async (val1: number, val2: number) => val1 + val2 + 1 } },
+            { command: { execute: async (val1: number, val2: number) => val1 + val2 + 2 } },
         ];
         const parallels = new Parallel(tasks);
 
-        const results = await parallels.execute(2);
+        const results = await parallels.execute(1, 2);
 
-        expect(results).toEqual([1, 2, 3]);
+        expect(results).toEqual([3, 4, 5]);
     });
 
     it('should handle an empty task list', async () => {
@@ -75,9 +75,9 @@ describe('Parallel', () => {
             { command: new MockCommand(4, logs) },
         ];
 
-        const parallels = new Parallel(tasks);
+        const parallels = new Parallel(tasks, 2);
 
-        const results = await parallels.execute(2);
+        const results = await parallels.execute();
 
         expect(results).toEqual([1, 2, 3, 4]);
         expect(logs).toEqual([

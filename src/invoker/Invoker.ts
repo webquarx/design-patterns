@@ -13,8 +13,8 @@ export default class Invoker {
         this.tasks = new InvokerTaskFactory().create(items, createCommand);
     }
 
-    parallel(limit?: number): Promise<any[]> {
-        const parallels = new Parallel(this.tasks);
-        return parallels.execute(limit);
+    parallel(limit?: number, ...args: any[]): Promise<any[]> {
+        const parallels = new Parallel(this.tasks, limit);
+        return parallels.execute(...args);
     }
 }
