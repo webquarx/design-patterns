@@ -1,4 +1,4 @@
-import Parallels from '../Parallels';
+import Parallel from '../Parallel';
 import ICommand from '../../command/ICommand';
 
 class MockCommand implements ICommand {
@@ -31,14 +31,14 @@ class SlowMockCommand {
     }
 }
 
-describe('Parallels', () => {
+describe('Parallel', () => {
     it('should execute tasks in parallel without limiting', async () => {
         const tasks = [
             { command: new MockCommand(1) },
             { command: new MockCommand(2) },
             { command: new MockCommand(3) },
         ];
-        const parallels = new Parallels(tasks);
+        const parallels = new Parallel(tasks);
 
         const results = await parallels.execute();
 
@@ -51,7 +51,7 @@ describe('Parallels', () => {
             { command: new MockCommand(2) },
             { command: new MockCommand(3) },
         ];
-        const parallels = new Parallels(tasks);
+        const parallels = new Parallel(tasks);
 
         const results = await parallels.execute(2);
 
@@ -59,7 +59,7 @@ describe('Parallels', () => {
     });
 
     it('should handle an empty task list', async () => {
-        const parallels = new Parallels([]);
+        const parallels = new Parallel([]);
 
         const results = await parallels.execute();
 
@@ -75,7 +75,7 @@ describe('Parallels', () => {
             { command: new MockCommand(4, logs) },
         ];
 
-        const parallels = new Parallels(tasks);
+        const parallels = new Parallel(tasks);
 
         const results = await parallels.execute(2);
 
@@ -99,7 +99,7 @@ describe('Parallels', () => {
             { command: new MockCommand(4, logs) },
         ];
 
-        const parallels = new Parallels(tasks);
+        const parallels = new Parallel(tasks);
 
         const results = await parallels.execute();
 

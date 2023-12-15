@@ -1,6 +1,6 @@
 import { InvokerTask } from './TInvoker';
 
-export default class Parallels {
+export default class Parallel {
     private limit?: number;
 
     private currentIndex: number = 0;
