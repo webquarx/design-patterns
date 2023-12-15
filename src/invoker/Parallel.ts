@@ -1,4 +1,5 @@
 import { InvokerTask } from './TInvoker';
+import executeCommand from '../core/executeCommand';
 
 export default class Parallel {
     private currentIndex: number = 0;
@@ -46,7 +47,7 @@ export default class Parallel {
         const task = this.tasks[index];
 
         try {
-            this.results[index] = await task.command.execute(...this.args);
+            this.results[index] = await executeCommand(task.command, ...this.args);
         } finally {
             this.runningTasks--;
             this.runNextTask();
