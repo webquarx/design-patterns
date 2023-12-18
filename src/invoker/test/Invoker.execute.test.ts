@@ -9,6 +9,26 @@ describe('Invoker.execute', () => {
         expect(res).toEqual([]);
     });
 
+    test('limit method sets retries to at least 1', () => {
+        const invoker = new Invoker([]);
+
+        invoker.limit({});
+        // @ts-expect-error limits is private
+        expect(invoker.limits.retries).toBe(1);
+
+        invoker.limit({ retries: 0 });
+        // @ts-expect-error limits is private
+        expect(invoker.limits.retries).toBe(1);
+
+        invoker.limit({ retries: 1 });
+        // @ts-expect-error limits is private
+        expect(invoker.limits.retries).toBe(1);
+
+        invoker.limit({ retries: 5 });
+        // @ts-expect-error limits is private
+        expect(invoker.limits.retries).toBe(5);
+    });
+
     it('should execute invoker with limiting concurrent tasks', async () => {
         const logs: number[] = [];
         const invoker = new Invoker([
@@ -38,7 +58,7 @@ describe('Invoker.execute', () => {
             })),
         ]);
 
-        const res = await invoker.parallel({ concurrent: 2 }, '!');
+        const res = await invoker.limit({ concurrent: 2 }).parallel('!');
 
         expect(res).toEqual(['1!', '2!', '3!', '4!']);
         expect(logs).toEqual([2, 3, 1, 4]);

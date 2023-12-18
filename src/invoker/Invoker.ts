@@ -7,6 +7,10 @@ import Parallel from './Parallel';
 export default class Invoker {
     private readonly tasks: InvokerTask[] = [];
 
+    private limits: TaskLimits = {
+        retries: 1,
+    };
+
     constructor(commands: TInvokerTask | TInvokerTask[]);
 
     constructor(items: any[], createCommand: ICreateCommandFunc);
@@ -15,8 +19,13 @@ export default class Invoker {
         this.tasks = new InvokerTaskFactory().create(items, createCommand);
     }
 
-    parallel(taskLimits: TaskLimits = { retries: 1 }, ...args: any[]): Promise<any[]> {
-        const parallels = new Parallel(this.tasks, taskLimits.concurrent);
+    limit(limits: TaskLimits): Invoker {
+        this.limits = { ...limits, retries: Math.max(1, limits.retries || 1) };
+        return this;
+    }
+
+    parallel(...args: any[]): Promise<any[]> {
+        const parallels = new Parallel(this.tasks, this.limits.concurrent);
         return parallels.execute(...args);
     }
 }
