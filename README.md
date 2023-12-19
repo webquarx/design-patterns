@@ -484,3 +484,28 @@ const invoker = new Invoker(
     (item) => new TestCommand(item),
 );
 ```
+
+### Setting Execution Limits
+The Invoker supports limits for executing commands, which can be set for the entire execution process.
+
+```concurrent```: the count of concurrently running commands; it will run all commands concurrently if not provided.
+```typescript
+const invoker = new Invoker([]);
+invoker.limit({ concurrent: 2 });
+```
+
+### Parallel
+Run multiple commands simultaneously, without waiting for each one to finish before starting the next.
+If any command encounters an error, the promise will be promptly rejected with the first error.
+Once all commands have finished, their results will be returned as an array.
+
+You can limit the number of concurrently running commands using the ```limit``` method.
+Without setting a command execution limit, the method will run all commands simultaneously.
+In this case, its execution is equivalent to the `Promise.all` method.
+
+The method also supports any number of arguments, which will be passed ```canExecute``` and ```execute``` methods of commands. 
+
+```typescript
+const commands = [/* commands */];
+await new Invoker(commands).limit({ concurrent: 2 }).parallel();
+```
