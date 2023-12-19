@@ -31,6 +31,23 @@ class SlowMockCommand {
     }
 }
 
+class SlowRejectMockCommand {
+    constructor(
+        readonly val: number = 0,
+        readonly logs: string[] = [],
+        readonly timeout: number = 50,
+    ) {}
+
+    execute(): Promise<number> {
+        return new Promise((resolve, reject) => {
+            this.logs.push(`start: ${this.val}`);
+            setTimeout(() => {
+                reject(new Error(`reject: ${this.val}`));
+            }, this.timeout);
+        });
+    }
+}
+
 describe('Parallel', () => {
     it('should execute tasks in parallel without limiting', async () => {
         const tasks = [
@@ -100,7 +117,6 @@ describe('Parallel', () => {
         ];
 
         const parallels = new Parallel(tasks);
-
         const results = await parallels.execute();
 
         expect(results).toEqual([1, 2, 3, 4]);
@@ -112,5 +128,36 @@ describe('Parallel', () => {
             'end: 3',
             'end: 2',
         ]);
+    });
+
+    it('should throw error if there is command error', async () => {
+        const logs: string[] = [];
+        const tasks = [
+            { command: new SlowRejectMockCommand(1, logs, 10) },
+        ];
+
+        const parallels = new Parallel(tasks, 2);
+        await expect(parallels.execute()).rejects.toThrow('reject: 1');
+    });
+
+    it('should stop executing commands if there is an exception', async () => {
+        const logs: string[] = [];
+        const tasks = [
+            { command: new SlowMockCommand(1, logs, 10) },
+            { command: new SlowRejectMockCommand(2, logs, 10) },
+            { command: new SlowRejectMockCommand(3, logs, 10) },
+            { command: new SlowMockCommand(4, logs, 10) },
+        ];
+
+        const parallels = new Parallel(tasks, 2);
+        await expect(parallels.execute()).rejects.toThrow('reject: 2');
+
+        await new Promise((resolve) => {
+            setTimeout(resolve, 50);
+        });
+        // @ts-expect-error results is private
+        expect(parallels.results.length).toBe(1);
+        // @ts-expect-error errors is private
+        expect(parallels.errors).toEqual([undefined, new Error('reject: 2')]);
     });
 });
