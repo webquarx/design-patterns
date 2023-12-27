@@ -4,6 +4,11 @@ export interface InvokerTask {
     command: ICommand,
 }
 
+export interface InvokerTaskResult {
+    error?: unknown,
+    value?: any,
+}
+
 export type TInvokerTask = ICommand | InvokerTask;
 
 export interface ICreateCommandFunc {

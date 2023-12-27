@@ -1,5 +1,5 @@
 import { InvokerTask } from './TInvoker';
-import executeCommand from '../core/executeCommand';
+import TaskExecutor from './TaskExecutor';
 
 export default class Parallel {
     private currentIndex: number = 0;
@@ -33,7 +33,7 @@ export default class Parallel {
 
     private runNextTask(): void {
         while (
-            !this.errors.length
+            !this.hasError()
             && this.currentIndex < this.tasks.length
             && (this.limit === undefined || this.runningTasks < this.limit)
         ) {
@@ -41,7 +41,7 @@ export default class Parallel {
             this.executeTask(index);
         }
 
-        if (this.errors.length) {
+        if (this.hasError()) {
             this.currentIndex = 0;
             this.limit = undefined;
 
@@ -59,21 +59,22 @@ export default class Parallel {
     }
 
     private async executeTask(index: number): Promise<void> {
-        const task = this.tasks[index];
+        this.runningTasks++;
 
-        try {
-            this.runningTasks++;
-            const res = await executeCommand(task.command, ...this.args);
-            if (!this.errors.length) {
-                this.results[index] = res;
+        const task = this.tasks[index];
+        const res = await new TaskExecutor(task).execute(...this.args);
+        if (!this.hasError()) {
+            if (res.error) {
+                this.errors[index] = res.error;
+            } else {
+                this.results[index] = res.value;
             }
-        } catch (error) {
-            if (!this.errors.length) {
-                this.errors[index] = error;
-            }
-        } finally {
-            this.runningTasks--;
-            this.runNextTask();
         }
+        this.runningTasks--;
+        this.runNextTask();
+    }
+
+    private hasError(): boolean {
+        return this.errors.length > 0;
     }
 }
