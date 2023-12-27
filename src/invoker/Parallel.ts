@@ -1,14 +1,13 @@
 import { InvokerTask } from './TInvoker';
 import TaskExecutor from './TaskExecutor';
+import TaskResults from './TaskResults';
 
 export default class Parallel {
     private currentIndex: number = 0;
 
     private runningTasks: number = 0;
 
-    private results: any[] = [];
-
-    private errors: any[] = [];
+    private results = new TaskResults();
 
     private args: any[] = [];
 
@@ -33,7 +32,7 @@ export default class Parallel {
 
     private runNextTask(): void {
         while (
-            !this.hasError()
+            !this.results.hasError()
             && this.currentIndex < this.tasks.length
             && (this.limit === undefined || this.runningTasks < this.limit)
         ) {
@@ -41,12 +40,11 @@ export default class Parallel {
             this.executeTask(index);
         }
 
-        if (this.hasError()) {
+        if (this.results.hasError()) {
             this.currentIndex = 0;
             this.limit = undefined;
 
-            const error = this.errors.find((item) => !!item);
-            this.promiseReject(error);
+            this.promiseReject(this.results.error);
             return;
         }
 
@@ -54,7 +52,7 @@ export default class Parallel {
             this.currentIndex = 0;
             this.limit = undefined;
 
-            this.promiseResolve(this.results);
+            this.promiseResolve(this.results.successful);
         }
     }
 
@@ -63,18 +61,9 @@ export default class Parallel {
 
         const task = this.tasks[index];
         const res = await new TaskExecutor(task).execute(...this.args);
-        if (!this.hasError()) {
-            if (res.error) {
-                this.errors[index] = res.error;
-            } else {
-                this.results[index] = res.value;
-            }
-        }
+        this.results.setIfNoError(index, res);
+
         this.runningTasks--;
         this.runNextTask();
-    }
-
-    private hasError(): boolean {
-        return this.errors.length > 0;
     }
 }

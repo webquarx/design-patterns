@@ -155,9 +155,7 @@ describe('Parallel', () => {
         await new Promise((resolve) => {
             setTimeout(resolve, 50);
         });
-        // @ts-expect-error results is private
-        expect(parallels.results.length).toBe(1);
         // @ts-expect-error errors is private
-        expect(parallels.errors).toEqual([undefined, new Error('reject: 2')]);
+        expect(parallels.results.results).toEqual([{ value: 1 }, { error: new Error('reject: 2') }]);
     });
 });
