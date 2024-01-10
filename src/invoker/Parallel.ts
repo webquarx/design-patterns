@@ -1,11 +1,10 @@
 import { InvokerTask } from './TInvoker';
 import TaskExecutor from './TaskExecutor';
 import TaskResults from './TaskResults';
+import TaskIterator from './TaskIterator';
 
 export default class Parallel {
-    private currentIndex: number = 0;
-
-    private runningTasks: number = 0;
+    private readonly iterator: TaskIterator;
 
     private results = new TaskResults();
 
@@ -17,8 +16,10 @@ export default class Parallel {
 
     constructor(
         private readonly tasks: InvokerTask[],
-        private limit?: number,
-    ) {}
+        limit?: number,
+    ) {
+        this.iterator = new TaskIterator(this.tasks.length, limit);
+    }
 
     execute(...args: any[]): Promise<any[]> {
         this.args = args;
@@ -33,37 +34,29 @@ export default class Parallel {
     private runNextTask(): void {
         while (
             !this.results.hasError()
-            && this.currentIndex < this.tasks.length
-            && (this.limit === undefined || this.runningTasks < this.limit)
+            && this.iterator.next()
         ) {
-            const index = this.currentIndex++;
-            this.executeTask(index);
+            this.executeTask();
         }
 
         if (this.results.hasError()) {
-            this.currentIndex = 0;
-            this.limit = undefined;
-
             this.promiseReject(this.results.error);
             return;
         }
 
-        if (this.runningTasks === 0 && this.currentIndex === this.tasks.length) {
-            this.currentIndex = 0;
-            this.limit = undefined;
-
+        if (this.iterator.done) {
             this.promiseResolve(this.results.successful);
         }
     }
 
-    private async executeTask(index: number): Promise<void> {
-        this.runningTasks++;
-
+    private async executeTask(): Promise<void> {
+        const { index } = this.iterator;
         const task = this.tasks[index];
-        const res = await new TaskExecutor(task).execute(...this.args);
-        this.results.setIfNoError(index, res);
 
-        this.runningTasks--;
+        const res = await new TaskExecutor(task).execute(...this.args);
+
+        this.results.setIfNoError(index, res);
+        this.iterator.complete();
         this.runNextTask();
     }
 }
