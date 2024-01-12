@@ -2,6 +2,7 @@ import ICommand from '../command/ICommand';
 
 export interface InvokerTask {
     command: ICommand,
+    retries?: number,
 }
 
 export interface InvokerTaskResult {

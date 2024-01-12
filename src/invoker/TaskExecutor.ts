@@ -7,11 +7,19 @@ export default class TaskExecutor implements IExecutable {
     }
 
     async execute(...args: any[]): Promise<InvokerTaskResult> {
+        return await this.tryExecute(1, args);
+    }
+
+    private async tryExecute(attempt: number, args: any[]): Promise<InvokerTaskResult> {
+        const { command, retries = 1 } = this.task;
         try {
-            const value = await executeCommand(this.task.command, ...args);
+            const value = await executeCommand(command, ...args);
             return { value };
         } catch (error: unknown) {
-            return { error };
+            if (attempt >= retries) {
+                return { error };
+            }
         }
+        return await this.tryExecute(attempt + 1, args);
     }
 }
