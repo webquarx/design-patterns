@@ -3,7 +3,10 @@ import executeCommand from '../core/executeCommand';
 import IExecutable from '../core/IExecutable';
 
 export default class TaskExecutor implements IExecutable {
-    constructor(private readonly task: InvokerTask) {
+    constructor(
+        private readonly task: InvokerTask,
+        private readonly retries: number = 1,
+    ) {
     }
 
     async execute(...args: any[]): Promise<InvokerTaskResult> {
@@ -11,7 +14,7 @@ export default class TaskExecutor implements IExecutable {
     }
 
     private async tryExecute(attempt: number, args: any[]): Promise<InvokerTaskResult> {
-        const { command, retries = 1 } = this.task;
+        const { command, retries = this.retries } = this.task;
         try {
             const value = await executeCommand(command, ...args);
             return { value };

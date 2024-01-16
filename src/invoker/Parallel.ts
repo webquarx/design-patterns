@@ -1,4 +1,4 @@
-import { InvokerTask } from './TInvoker';
+import { InvokerTask, TaskLimits } from './TInvoker';
 import TaskExecutor from './TaskExecutor';
 import TaskResults from './TaskResults';
 import TaskIterator from './TaskIterator';
@@ -9,15 +9,15 @@ export default class Parallel {
 
     private readonly iterator: TaskIterator;
 
-    private results = new TaskResults();
+    private readonly results = new TaskResults();
 
     private args: any[] = [];
 
     constructor(
         private readonly tasks: InvokerTask[],
-        limit?: number,
+        private readonly limits?: TaskLimits,
     ) {
-        this.iterator = new TaskIterator(this.tasks.length, limit);
+        this.iterator = new TaskIterator(this.tasks.length, this.limits?.concurrent);
     }
 
     execute(...args: any[]): Promise<any[]> {
@@ -50,7 +50,7 @@ export default class Parallel {
         const { index } = this.iterator;
         const task = this.tasks[index];
 
-        const res = await new TaskExecutor(task).execute(...this.args);
+        const res = await new TaskExecutor(task, this.limits?.retries).execute(...this.args);
 
         this.results.setIfNoError(index, res);
         this.iterator.complete();

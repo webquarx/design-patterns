@@ -92,7 +92,7 @@ describe('Parallel', () => {
             { command: new MockCommand(4, logs) },
         ];
 
-        const parallels = new Parallel(tasks, 2);
+        const parallels = new Parallel(tasks, { concurrent: 2 });
 
         const results = await parallels.execute();
 
@@ -136,7 +136,7 @@ describe('Parallel', () => {
             { command: new SlowRejectMockCommand(1, logs, 10) },
         ];
 
-        const parallels = new Parallel(tasks, 2);
+        const parallels = new Parallel(tasks, { concurrent: 2 });
         await expect(parallels.execute()).rejects.toThrow('reject: 1');
     });
 
@@ -149,7 +149,7 @@ describe('Parallel', () => {
             { command: new SlowMockCommand(4, logs, 10) },
         ];
 
-        const parallels = new Parallel(tasks, 2);
+        const parallels = new Parallel(tasks, { concurrent: 2 });
         await expect(parallels.execute()).rejects.toThrow('reject: 2');
 
         await new Promise((resolve) => {

@@ -25,7 +25,7 @@ export default class Invoker {
     }
 
     parallel(...args: any[]): Promise<any[]> {
-        const parallels = new Parallel(this.tasks, this.limits.concurrent);
+        const parallels = new Parallel(this.tasks, this.limits);
         return parallels.execute(...args);
     }
 }
