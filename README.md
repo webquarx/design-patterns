@@ -494,6 +494,35 @@ const invoker = new Invoker([]);
 invoker.limit({ concurrent: 2 });
 ```
 
+```retries```: the number of retry attempts for executing a command. The default value for each command is 1.
+If the command throws an error, it will be executed again until the specified number of retries is reached.
+```typescript
+const invoker = new Invoker([]);
+// Each task will be executed 3 times in case of an error
+// after which it will be marked as failed.
+invoker.limit({ retries: 3 });
+```
+
+### Command Limits
+Each command could have its own limit, which overrides the common limit specified for the Invoker.
+In this case, the Invoker constructor accepts an object where the command must be assigned to the ```command``` property.
+```typescript
+const invoker = new Invoker({ command: useCommand(/*...*/) });
+```
+
+```retries```: the number of retry attempts for executing a command.
+The value for the command overrides the retries value specified in the ```Invoker.limit``` method. 
+```typescript
+const invoker = new Invoker([
+    useCommand(/*...*/), // invoker.limit retries is used
+    {
+        command: useCommand(/*...*/),
+        retries: 4, // will override invoker.limit retries
+    },
+]);
+invoker.limit({ retries: 3 });
+```
+
 ### Parallel
 Run multiple commands simultaneously, without waiting for each one to finish before starting the next.
 If any command encounters an error, the promise will be promptly rejected with the first error.
