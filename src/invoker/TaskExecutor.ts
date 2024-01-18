@@ -1,11 +1,11 @@
-import { InvokerTask, InvokerTaskResult } from './TInvoker';
+import { InvokerTask, InvokerTaskResult, TRetries } from './TInvoker';
 import executeCommand from '../core/executeCommand';
 import IExecutable from '../core/IExecutable';
 
 export default class TaskExecutor implements IExecutable {
     constructor(
         private readonly task: InvokerTask,
-        private readonly retries: number = 1,
+        private readonly retries: TRetries = 1,
     ) {
     }
 
@@ -19,7 +19,10 @@ export default class TaskExecutor implements IExecutable {
             const value = await executeCommand(command, ...args);
             return { value };
         } catch (error: unknown) {
-            if (attempt >= retries) {
+            if (typeof retries === 'number' && attempt >= retries) {
+                return { error };
+            }
+            if (typeof retries === 'function' && !await retries(command, attempt, error, ...args)) {
                 return { error };
             }
         }

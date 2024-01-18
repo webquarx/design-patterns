@@ -49,4 +49,40 @@ describe('TaskExecutor', () => {
         expect(res).toEqual({ error: new Error('retry: 3') });
         expect(retry).toEqual(3);
     });
+
+    it('should run successfully after several retries with a function', async () => {
+        let success = false;
+        const command = useCommand(async () => {
+            if (success) {
+                return 'test';
+            }
+            throw new Error('error');
+        });
+        const retries = async (cmd: any, index: number) => {
+            success = index === 3;
+            return true;
+        };
+
+        const taskExecutor = new TaskExecutor({ command, retries });
+        const res = await taskExecutor.execute();
+
+        expect(res).toEqual({ value: 'test' });
+    });
+
+    it('should fail after several retries with a function', async () => {
+        let retry = 0;
+        const command = useCommand(async () => {
+            throw new Error('error');
+        });
+        const retries = async (cmd: any, index: number) => {
+            retry++;
+            return index !== 3;
+        };
+
+        const taskExecutor = new TaskExecutor({ command, retries });
+        const res = await taskExecutor.execute();
+
+        expect(res).toEqual({ error: new Error('error') });
+        expect(retry).toEqual(3);
+    });
 });

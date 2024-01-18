@@ -1,8 +1,14 @@
 import ICommand from '../command/ICommand';
 
+export interface IRetriesFunc {
+    (command: ICommand, index: number, error: unknown, ...args: any[]): Promise<boolean>;
+}
+
+export type TRetries = number | IRetriesFunc;
+
 export interface InvokerTask {
     command: ICommand,
-    retries?: number,
+    retries?: TRetries,
 }
 
 export interface InvokerTaskResult {
@@ -18,5 +24,5 @@ export interface ICreateCommandFunc {
 
 export type TaskLimits = {
     concurrent?: number,
-    retries?: number,
+    retries?: TRetries,
 };

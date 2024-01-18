@@ -20,7 +20,8 @@ export default class Invoker {
     }
 
     limit(limits: TaskLimits): Invoker {
-        this.limits = { ...limits, retries: Math.max(1, limits.retries || 1) };
+        const retries = typeof limits.retries === 'number' ? Math.max(1, limits.retries) : limits.retries || 1;
+        this.limits = { ...limits, retries };
         return this;
     }
 
