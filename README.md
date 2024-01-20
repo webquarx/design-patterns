@@ -494,11 +494,12 @@ const invoker = new Invoker([]);
 invoker.limit({ concurrent: 2 });
 ```
 
-```retries```: the number of retry attempts for executing a command. The default value for each command is 1.
+```retries```: the number of retry attempts for executing each command. The default value for the command is 1.
 If the command throws an error, it will be executed again until the specified number of retries is reached.
 ```typescript
-const invoker = new Invoker([]);
-// Each task will be executed 3 times in case of an error
+const invoker = new Invoker([/* commands */]);
+
+// Each command will be executed 3 times in case of an error
 // after which it will be marked as failed.
 invoker.limit({ retries: 3 });
 ```
