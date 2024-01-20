@@ -1,7 +1,7 @@
 import ICommand from '../command/ICommand';
 
 export interface IRetriesFunc {
-    (command: ICommand, index: number, error: unknown, ...args: any[]): Promise<boolean>;
+    (command: ICommand, attempt: number, error: unknown, ...args: any[]): Promise<boolean>;
 }
 
 export type TRetries = number | IRetriesFunc;
