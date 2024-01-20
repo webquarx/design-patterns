@@ -488,13 +488,17 @@ const invoker = new Invoker(
 ### Setting Execution Limits
 The Invoker supports limits for executing commands, which can be set for the entire execution process.
 
-```concurrent```: the count of concurrently running commands; it will run all commands concurrently if not provided.
+#### Concurrent
+The count of concurrently running commands; it will run all commands concurrently if not provided.
 ```typescript
 const invoker = new Invoker([]);
 invoker.limit({ concurrent: 2 });
 ```
 
-```retries```: the number of retry attempts for executing each command. The default value for the command is 1.
+#### Retries
+The ```retries``` can be either a number or a function.
+
+The ```number``` of retry attempts for executing each command. The default value for the command is 1.
 If the command throws an error, it will be executed again until the specified number of retries is reached.
 ```typescript
 const invoker = new Invoker([/* commands */]);
@@ -504,6 +508,30 @@ const invoker = new Invoker([/* commands */]);
 invoker.limit({ retries: 3 });
 ```
 
+The ```asynchronous function``` that will be executed if the command throws an error.
+
+Parameters:
+
+```command```: a command that has thrown an error.
+
+```attempt```: the current number of retries.
+
+```error```: the thrown error.
+
+```...args```: all the arguments that were passed for executing the command.
+
+It should return ```true``` to indicate that the retrying of the command execution should continue. Otherwise, the command execution will be stopped.
+
+```typescript
+const invoker = new Invoker([/* commands */]);
+invoker.limit({
+    // continue executing until the third attempt
+    retries: async (command, attempt, error, arg1) => {
+        return attempt < 3;
+    },
+});
+```
+
 ### Command Limits
 Each command could have its own limit, which overrides the common limit specified for the Invoker.
 In this case, the Invoker constructor accepts an object where the command must be assigned to the ```command``` property.
@@ -511,7 +539,8 @@ In this case, the Invoker constructor accepts an object where the command must b
 const invoker = new Invoker({ command: useCommand(/*...*/) });
 ```
 
-```retries```: the number of retry attempts for executing a command.
+```retries```: the same as Invoker ```retries``` limit. Represents the number of retry attempts for executing a command or an asynchronous function indicating whether the command execution should be continued. 
+
 The value for the command overrides the retries value specified in the ```Invoker.limit``` method. 
 ```typescript
 const invoker = new Invoker([
@@ -519,6 +548,13 @@ const invoker = new Invoker([
     {
         command: useCommand(/*...*/),
         retries: 4, // will override invoker.limit retries
+    },
+    {
+        command: useCommand(/*...*/),
+        // will override invoker.limit retries
+        retries: async (command, attempt, error, arg1) => {
+            return attempt < 3; // continue executing until the third attempt
+        },
     },
 ]);
 invoker.limit({ retries: 3 });
