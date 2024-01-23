@@ -1,4 +1,5 @@
-import { InvokerTask, TInvokerTask, ICreateCommandFunc } from '../TInvoker';
+import { ICreateCommandFunc, InvokerTask, TInvokerTask } from '../TInvoker';
+import InvokerCommandTaskFactory from './InvokerCommandTaskFactory';
 
 export default class InvokerTaskFactory {
     // eslint-disable-next-line class-methods-use-this
@@ -30,11 +31,6 @@ export default class InvokerTaskFactory {
 
     // eslint-disable-next-line class-methods-use-this
     private toTasks(commands: TInvokerTask[]): InvokerTask[] {
-        return commands.map((item) => {
-            if (item && 'command' in item) {
-                return item;
-            }
-            return { command: item };
-        });
+        return commands.map((item) => new InvokerCommandTaskFactory().create(item));
     }
 }
