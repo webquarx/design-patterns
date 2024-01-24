@@ -16,7 +16,7 @@ describe('create Invoker', () => {
         const invoker = new Invoker(command);
 
         // @ts-expect-error tasks is private
-        expect(invoker.tasks).toEqual([{ command }]);
+        expect(invoker.tasks).toEqual([{ command, status: 'idle' }]);
     });
 
     it('should initialize with an array of commands', () => {

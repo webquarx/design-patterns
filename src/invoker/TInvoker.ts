@@ -6,8 +6,16 @@ export interface IRetriesFunc {
 
 export type TRetries = number | IRetriesFunc;
 
+export enum InvokerTaskStatus {
+    idle = 'idle',
+    pending = 'pending',
+    fulfilled = 'fulfilled',
+    rejected = 'rejected',
+}
+
 export interface InvokerTask {
     command: ICommand,
+    status?: InvokerTaskStatus,
     retries?: TRetries,
 }
 

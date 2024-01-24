@@ -1,6 +1,7 @@
 import { InvokerTask, InvokerTaskResult, TRetries } from './TInvoker';
 import executeCommand from '../core/executeCommand';
 import IExecutable from '../core/IExecutable';
+import InvokerTaskStatus from './InvokerTaskStatus';
 
 export default class TaskExecutor implements IExecutable {
     constructor(
@@ -10,7 +11,12 @@ export default class TaskExecutor implements IExecutable {
     }
 
     async execute(...args: any[]): Promise<InvokerTaskResult> {
-        return await this.tryExecute(1, args);
+        InvokerTaskStatus.setPending(this.task);
+
+        const res = await this.tryExecute(1, args);
+
+        InvokerTaskStatus.setFromResult(this.task, res);
+        return res;
     }
 
     private async tryExecute(attempt: number, args: any[]): Promise<InvokerTaskResult> {

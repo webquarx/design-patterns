@@ -1,8 +1,12 @@
 import { InvokerTask, TInvokerTask } from '../TInvoker';
+import InvokerTaskStatus from '../InvokerTaskStatus';
 
 export default class InvokerCommandTaskFactory {
     create(item: TInvokerTask): InvokerTask {
-        return this.getTask(item);
+        const task = this.getTask(item);
+        InvokerTaskStatus.setDefaultStatus(task);
+
+        return task;
     }
 
     // eslint-disable-next-line class-methods-use-this
