@@ -532,12 +532,31 @@ invoker.limit({
 });
 ```
 
-### Command Limits
-Each command could have its own limit, which overrides the common limit specified for the Invoker.
-In this case, the Invoker constructor accepts an object where the command must be assigned to the ```command``` property.
+### Invoker Tasks
+Each command can be represented as a task. This can be useful for monitoring command status or specifying custom execution limits.
+
+For these cases, the Invoker constructor accepts an object where the command must be assigned to the ```command``` property.
+Other task fields are optional. 
 ```typescript
-const invoker = new Invoker({ command: useCommand(/*...*/) });
+const task = {
+    command: useCommand(/*...*/),
+};
+const invoker = new Invoker(task);
 ```
+
+#### Task Statuses
+For monitoring the current task status, use the ```status``` field. The possible values are:
+
+```idle```: the task has been added to the Invoker and is waiting to start executing with the Invoker method or is in queue for its turn. 
+
+```pending```: the task has been started, currently, it's running while the Invoker is waiting for its completion.
+
+```fulfilled```: the task has been completed successfully without any errors.
+
+```rejected```: the task has been completed with an error.
+
+#### Task Limits
+Each command could have its own limit, which overrides the common limit specified for the Invoker.
 
 ```retries```: the same as Invoker ```retries``` limit. Represents the number of retry attempts for executing a command or an asynchronous function indicating whether the command execution should be continued. 
 
