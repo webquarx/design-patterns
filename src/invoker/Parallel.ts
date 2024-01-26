@@ -1,6 +1,6 @@
 import { InvokerTask, TaskLimits } from './TInvoker';
 import TaskExecutor from './TaskExecutor';
-import TaskResults from './TaskResults';
+import InvokerTaskManager from './InvokerTaskManager';
 import TaskIterator from './TaskIterator';
 import PromiseResolvers from './PromiseResolvers';
 
@@ -9,15 +9,16 @@ export default class Parallel {
 
     private readonly iterator: TaskIterator;
 
-    private readonly results = new TaskResults();
+    private readonly tasks: InvokerTaskManager;
 
     private args: any[] = [];
 
     constructor(
-        private readonly tasks: InvokerTask[],
+        tasks: InvokerTask[],
         private readonly limits?: TaskLimits,
     ) {
-        this.iterator = new TaskIterator(this.tasks.length, this.limits?.concurrent);
+        this.tasks = new InvokerTaskManager(tasks);
+        this.iterator = new TaskIterator(tasks.length, this.limits?.concurrent);
     }
 
     execute(...args: any[]): Promise<any[]> {
@@ -30,29 +31,29 @@ export default class Parallel {
 
     private runNextTask(): void {
         while (
-            !this.results.hasError()
+            !this.tasks.hasError()
             && this.iterator.next()
         ) {
             this.executeTask();
         }
 
-        if (this.results.hasError()) {
-            this.promise.reject(this.results.error);
+        if (this.tasks.hasError()) {
+            this.promise.reject(this.tasks.error);
             return;
         }
 
         if (this.iterator.done) {
-            this.promise.resolve(this.results.successful);
+            this.promise.resolve(this.tasks.successful);
         }
     }
 
     private async executeTask(): Promise<void> {
         const { index } = this.iterator;
-        const task = this.tasks[index];
+        const task = this.tasks.get(index);
 
         const res = await new TaskExecutor(task, this.limits?.retries).execute(...this.args);
 
-        this.results.setIfNoError(index, res);
+        this.tasks.setResultIfNoError(index, res);
         this.iterator.complete();
         this.runNextTask();
     }

@@ -17,6 +17,7 @@ export interface InvokerTask {
     command: ICommand,
     status?: InvokerTaskStatus,
     retries?: TRetries,
+    result?: InvokerTaskResult,
 }
 
 export interface InvokerTaskResult {

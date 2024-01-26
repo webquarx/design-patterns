@@ -1,10 +1,16 @@
 import { InvokerTask, TInvokerTask } from '../TInvoker';
 import InvokerTaskStatus from '../InvokerTaskStatus';
+import InvokerTaskResult from './InvokerTaskResult';
 
 export default class InvokerCommandTaskFactory {
     create(item: TInvokerTask): InvokerTask {
         const task = this.getTask(item);
-        InvokerTaskStatus.setDefaultStatus(task);
+        if (!task.status) {
+            task.status = InvokerTaskStatus.default;
+        }
+        if (!task.result) {
+            task.result = InvokerTaskResult.default;
+        }
 
         return task;
     }

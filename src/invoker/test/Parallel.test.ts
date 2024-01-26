@@ -155,7 +155,8 @@ describe('Parallel', () => {
         await new Promise((resolve) => {
             setTimeout(resolve, 50);
         });
-        // @ts-expect-error errors is private
-        expect(parallels.results.results).toEqual([{ value: 1 }, { error: new Error('reject: 2') }]);
+        // @ts-expect-error tasks is private
+        const results = parallels.tasks.tasks.map((task) => task.result);
+        expect(results).toEqual([{ value: 1 }, { error: new Error('reject: 2') }]);
     });
 });

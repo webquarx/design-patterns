@@ -1,9 +1,8 @@
 import { InvokerTask, InvokerTaskResult, InvokerTaskStatus as TaskStatus } from './TInvoker';
 
 export default class InvokerTaskStatus {
-    static setDefaultStatus(task: InvokerTask): void {
-        // eslint-disable-next-line no-param-reassign
-        task.status = TaskStatus.idle;
+    static get default(): TaskStatus {
+        return TaskStatus.idle;
     }
 
     static setPending(task: InvokerTask): void {
