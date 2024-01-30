@@ -11,6 +11,9 @@ export default class InvokerCommandTaskFactory {
         if (!task.result) {
             task.result = InvokerTaskResult.default;
         }
+        if (!task.retries) {
+            task.retries = undefined;
+        }
 
         return task;
     }
