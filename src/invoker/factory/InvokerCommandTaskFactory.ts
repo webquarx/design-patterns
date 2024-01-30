@@ -1,5 +1,5 @@
 import { InvokerTask, TInvokerTask } from '../TInvoker';
-import InvokerTaskStatus from '../InvokerTaskStatus';
+import InvokerTaskStatus from '../tasks/InvokerTaskStatus';
 import InvokerTaskResult from './InvokerTaskResult';
 
 export default class InvokerCommandTaskFactory {

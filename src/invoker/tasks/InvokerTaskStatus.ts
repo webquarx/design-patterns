@@ -1,4 +1,4 @@
-import { InvokerTask, InvokerTaskResult, InvokerTaskStatus as TaskStatus } from './TInvoker';
+import { InvokerTask, InvokerTaskResult, InvokerTaskStatus as TaskStatus } from '../TInvoker';
 
 export default class InvokerTaskStatus {
     static get default(): TaskStatus {

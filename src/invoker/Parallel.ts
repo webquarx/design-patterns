@@ -1,15 +1,15 @@
 import { InvokerTask, TaskLimits } from './TInvoker';
-import TaskExecutor from './TaskExecutor';
-import InvokerTaskManager from './InvokerTaskManager';
-import TaskIterator from './TaskIterator';
+import RetriesExecutor from './tasks/RetriesExecutor';
+import ResultCollector from './tasks/ResultCollector';
+import ParallelIterator from './tasks/ParallelIterator';
 import PromiseResolvers from './PromiseResolvers';
 
 export default class Parallel {
     private readonly promise = new PromiseResolvers<any[]>();
 
-    private readonly iterator: TaskIterator;
+    private readonly iterator: ParallelIterator;
 
-    private readonly tasks: InvokerTaskManager;
+    private readonly results: ResultCollector;
 
     private args: any[] = [];
 
@@ -17,8 +17,8 @@ export default class Parallel {
         tasks: ReadonlyArray<InvokerTask>,
         private readonly limits?: TaskLimits,
     ) {
-        this.tasks = new InvokerTaskManager(tasks);
-        this.iterator = new TaskIterator(tasks.length, this.limits?.concurrent);
+        this.results = new ResultCollector(tasks);
+        this.iterator = new ParallelIterator(tasks, this.limits?.concurrent);
     }
 
     execute(...args: any[]): Promise<any[]> {
@@ -31,29 +31,28 @@ export default class Parallel {
 
     private runNextTask(): void {
         while (
-            !this.tasks.hasError()
+            !this.results.hasError()
             && this.iterator.next()
         ) {
             this.executeTask();
         }
 
-        if (this.tasks.hasError()) {
-            this.promise.reject(this.tasks.error);
+        if (this.results.hasError()) {
+            this.promise.reject(this.results.error);
             return;
         }
 
         if (this.iterator.done) {
-            this.promise.resolve(this.tasks.successful);
+            this.promise.resolve(this.results.successful);
         }
     }
 
     private async executeTask(): Promise<void> {
-        const { index } = this.iterator;
-        const task = this.tasks.get(index);
+        const task = this.iterator.current;
 
-        const res = await new TaskExecutor(task, this.limits?.retries).execute(...this.args);
+        const res = await new RetriesExecutor(task, this.limits?.retries).execute(...this.args);
 
-        this.tasks.setResultIfNoError(index, res);
+        this.results.setIfNoError(task, res);
         this.iterator.complete();
         this.runNextTask();
     }

@@ -1,23 +1,25 @@
-export default class TaskIterator {
+import { InvokerTask } from '../TInvoker';
+
+export default class ParallelIterator {
     private currentIndex: number = 0;
 
     private runningTasks: number = 0;
 
     constructor(
-        private readonly length: number,
+        private readonly tasks: ReadonlyArray<InvokerTask>,
         private readonly limit?: number,
     ) {}
 
-    get index(): number {
-        return this.currentIndex - 1;
+    get current(): InvokerTask {
+        return this.tasks[this.currentIndex - 1];
     }
 
     get done(): boolean {
-        return this.runningTasks === 0 && this.currentIndex === this.length;
+        return this.runningTasks === 0 && this.currentIndex === this.tasks.length;
     }
 
     next(): boolean {
-        if (this.currentIndex < this.length
+        if (this.currentIndex < this.tasks.length
             && (this.limit === undefined || this.runningTasks < this.limit)
         ) {
             this.currentIndex++;

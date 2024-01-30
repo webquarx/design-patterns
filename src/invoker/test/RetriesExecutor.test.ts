@@ -1,11 +1,11 @@
-import TaskExecutor from '../TaskExecutor';
+import RetriesExecutor from '../tasks/RetriesExecutor';
 import { useCommand } from '../../command/useCommand';
 
-describe('TaskExecutor', () => {
+describe('RetriesExecutor', () => {
     it('should run successfully with one simple command', async () => {
         const command = useCommand(async () => 'test');
-        const taskExecutor = new TaskExecutor({ command });
-        const res = await taskExecutor.execute();
+        const executor = new RetriesExecutor({ command });
+        const res = await executor.execute();
 
         expect(res).toEqual({ value: 'test' });
     });
@@ -14,8 +14,8 @@ describe('TaskExecutor', () => {
         const command = useCommand(async () => {
             throw new Error('test error');
         });
-        const taskExecutor = new TaskExecutor({ command });
-        const res = await taskExecutor.execute();
+        const executor = new RetriesExecutor({ command });
+        const res = await executor.execute();
 
         expect(res).toEqual({ error: new Error('test error') });
     });
@@ -30,8 +30,8 @@ describe('TaskExecutor', () => {
             throw new Error(`retry: ${retry}`);
         });
 
-        const taskExecutor = new TaskExecutor({ command, retries: 3 });
-        const res = await taskExecutor.execute();
+        const executor = new RetriesExecutor({ command, retries: 3 });
+        const res = await executor.execute();
 
         expect(res).toEqual({ value: 'test' });
     });
@@ -43,8 +43,8 @@ describe('TaskExecutor', () => {
             throw new Error(`retry: ${retry}`);
         });
 
-        const taskExecutor = new TaskExecutor({ command, retries: 3 });
-        const res = await taskExecutor.execute();
+        const executor = new RetriesExecutor({ command, retries: 3 });
+        const res = await executor.execute();
 
         expect(res).toEqual({ error: new Error('retry: 3') });
         expect(retry).toEqual(3);
@@ -63,8 +63,8 @@ describe('TaskExecutor', () => {
             return true;
         };
 
-        const taskExecutor = new TaskExecutor({ command, retries });
-        const res = await taskExecutor.execute();
+        const executor = new RetriesExecutor({ command, retries });
+        const res = await executor.execute();
 
         expect(res).toEqual({ value: 'test' });
     });
@@ -79,8 +79,8 @@ describe('TaskExecutor', () => {
             return index !== 3;
         };
 
-        const taskExecutor = new TaskExecutor({ command, retries });
-        const res = await taskExecutor.execute();
+        const executor = new RetriesExecutor({ command, retries });
+        const res = await executor.execute();
 
         expect(res).toEqual({ error: new Error('error') });
         expect(retry).toEqual(3);
