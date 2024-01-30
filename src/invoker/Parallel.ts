@@ -14,7 +14,7 @@ export default class Parallel {
     private args: any[] = [];
 
     constructor(
-        tasks: InvokerTask[],
+        tasks: ReadonlyArray<InvokerTask>,
         private readonly limits?: TaskLimits,
     ) {
         this.tasks = new InvokerTaskManager(tasks);

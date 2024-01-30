@@ -17,7 +17,6 @@ describe('Invoker.taskStatus.Vue', () => {
         });
 
         const log: string[] = [];
-        // @ts-expect-error tasks is private
         const { tasks } = invoker;
         for (let i = 0; i < tasks.length; i++) {
             const task = tasks[i];

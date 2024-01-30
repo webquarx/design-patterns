@@ -3,7 +3,7 @@ import { InvokerTask, InvokerTaskResult } from './TInvoker';
 export default class InvokerTaskManager {
     private firstFailedTask?: InvokerTask;
 
-    constructor(private readonly tasks: InvokerTask[]) {
+    constructor(private readonly tasks: ReadonlyArray<InvokerTask>) {
     }
 
     get(index: number): InvokerTask {
