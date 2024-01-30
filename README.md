@@ -535,7 +535,7 @@ invoker.limit({
 ### Invoker Tasks
 Each command can be represented as a task. This can be useful for monitoring command status or specifying custom execution limits.
 
-For these cases, the Invoker constructor accepts an object where the command must be assigned to the ```command``` property.
+For these cases, the Invoker constructor accepts task object where the command must be assigned to the ```command``` property.
 Other task fields are optional. 
 ```typescript
 const task = {
@@ -577,6 +577,53 @@ const invoker = new Invoker([
     },
 ]);
 invoker.limit({ retries: 3 });
+```
+
+#### Task Result
+After executing a command its result will be available in the ```result``` task field.
+The field contains two values: ```value``` and ```error```. If the task is not completed both fields are undefined.
+
+```result.value```: the value returned from the command's execute method
+
+```result.error```: the error caught while executing the command
+
+### useTask Function
+Create a task using the ```useTask``` function to ensure that all necessary fields are present in the task object.
+The task will contain the following object with default values:
+```typescript
+const task = useTask(command);
+console.log(task);
+/*
+ {
+    command: Command,
+    status: 'idle',
+    retries: 1,
+    result: { error: undefined, value: undefined }
+}
+ */
+```
+While executing the command, the Invoker will change status and result fields of the task.
+This also makes it possible to use task objects with libraries that observe object states, such as Vue or MobX.
+
+```typescript
+import { reactive, watchEffect } from 'vue';
+
+const task = useTask({
+    command: new TestCommand(),
+    retries: 3,
+});
+
+const reactiveTask = reactive(task);
+watchEffect(() => {
+    console.log(reactiveTask.status);
+});
+
+await new Invoker(reactiveTask).parallel();
+/*
+idle
+pending
+fulfilled
+ */
 ```
 
 ### Parallel
