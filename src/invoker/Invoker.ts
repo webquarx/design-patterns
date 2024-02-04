@@ -1,25 +1,25 @@
 import {
-    InvokerTask, ICreateCommandFunc, TInvokerTask, TaskLimits,
+    ITask, ICreateCommandFunc, TTask, TaskLimits,
 } from './TInvoker';
 import InvokerTaskFactory from './factory/InvokerTaskFactory';
 import Parallel from './Parallel';
 
 export default class Invoker {
-    protected readonly taskList: InvokerTask[] = [];
+    protected readonly taskList: ITask[] = [];
 
     protected limits: TaskLimits = {
         retries: 1,
     };
 
-    constructor(commands: TInvokerTask | TInvokerTask[]);
+    constructor(commands: TTask | TTask[]);
 
     constructor(items: any[], createCommand: ICreateCommandFunc);
 
-    constructor(items: TInvokerTask | TInvokerTask[] | any[], createCommand?: ICreateCommandFunc) {
+    constructor(items: TTask | TTask[] | any[], createCommand?: ICreateCommandFunc) {
         this.taskList = new InvokerTaskFactory().create(items, createCommand);
     }
 
-    get tasks(): ReadonlyArray<InvokerTask> {
+    get tasks(): ReadonlyArray<ITask> {
         return this.taskList;
     }
 

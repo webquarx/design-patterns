@@ -1,9 +1,9 @@
-import { InvokerTask, TInvokerTask } from '../TInvoker';
+import { ITask, TTask } from '../TInvoker';
 import TaskStatus from '../tasks/TaskStatus';
 import TaskResult from '../tasks/TaskResult';
 
 export default class InvokerCommandTaskFactory {
-    create(item: TInvokerTask): InvokerTask {
+    create(item: TTask): ITask {
         const task = this.getTask(item);
         if (!task.status) {
             task.status = TaskStatus.default;
@@ -19,7 +19,7 @@ export default class InvokerCommandTaskFactory {
     }
 
     // eslint-disable-next-line class-methods-use-this
-    private getTask(item: TInvokerTask): InvokerTask {
+    private getTask(item: TTask): ITask {
         if (item && 'command' in item) {
             return item;
         }

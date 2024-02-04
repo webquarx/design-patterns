@@ -1,12 +1,12 @@
-import { ICreateCommandFunc, InvokerTask, TInvokerTask } from '../TInvoker';
+import { ICreateCommandFunc, ITask, TTask } from '../TInvoker';
 import InvokerCommandTaskFactory from './InvokerCommandTaskFactory';
 
 export default class InvokerTaskFactory {
     // eslint-disable-next-line class-methods-use-this
     create(
-        item: TInvokerTask | TInvokerTask[] | any[],
+        item: TTask | TTask[] | any[],
         createCommand?: ICreateCommandFunc,
-    ): InvokerTask[] {
+    ): ITask[] {
         let commands = [];
 
         const items = this.toArray(item);
@@ -20,7 +20,7 @@ export default class InvokerTaskFactory {
     }
 
     // eslint-disable-next-line class-methods-use-this
-    private toArray(items: TInvokerTask | TInvokerTask[] | any[]) {
+    private toArray(items: TTask | TTask[] | any[]) {
         return Array.isArray(items) ? items : [items];
     }
 
@@ -30,7 +30,7 @@ export default class InvokerTaskFactory {
     }
 
     // eslint-disable-next-line class-methods-use-this
-    private toTasks(commands: TInvokerTask[]): InvokerTask[] {
+    private toTasks(commands: TTask[]): ITask[] {
         return commands.map((item) => new InvokerCommandTaskFactory().create(item));
     }
 }

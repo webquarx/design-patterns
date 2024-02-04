@@ -1,4 +1,4 @@
-import { InvokerTask } from '../TInvoker';
+import { ITask } from '../TInvoker';
 
 export default class ParallelIterator {
     private currentIndex: number = 0;
@@ -6,11 +6,11 @@ export default class ParallelIterator {
     private runningTasks: number = 0;
 
     constructor(
-        private readonly tasks: ReadonlyArray<InvokerTask>,
+        private readonly tasks: ReadonlyArray<ITask>,
         private readonly limit?: number,
     ) {}
 
-    get current(): InvokerTask {
+    get current(): ITask {
         return this.tasks[this.currentIndex - 1];
     }
 

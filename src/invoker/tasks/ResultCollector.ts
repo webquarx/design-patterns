@@ -1,12 +1,12 @@
-import { InvokerTask, ITaskResult } from '../TInvoker';
+import { ITask, ITaskResult } from '../TInvoker';
 
 export default class ResultCollector {
-    private firstFailedTask?: InvokerTask;
+    private firstFailedTask?: ITask;
 
-    constructor(private readonly tasks: ReadonlyArray<InvokerTask>) {
+    constructor(private readonly tasks: ReadonlyArray<ITask>) {
     }
 
-    setIfNoError(task: InvokerTask, result: ITaskResult): void {
+    setIfNoError(task: ITask, result: ITaskResult): void {
         if (!this.hasError()) {
             this.set(task, result);
         }
@@ -16,7 +16,7 @@ export default class ResultCollector {
         return !!this.firstFailedTask;
     }
 
-    set(task: InvokerTask, result: ITaskResult): void {
+    set(task: ITask, result: ITaskResult): void {
         const item = task;
         item.result = result;
 

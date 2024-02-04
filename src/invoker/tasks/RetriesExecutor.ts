@@ -1,11 +1,11 @@
-import { InvokerTask, ITaskResult, TRetries } from '../TInvoker';
+import { ITask, ITaskResult, TRetries } from '../TInvoker';
 import executeCommand from '../../core/executeCommand';
 import IExecutable from '../../core/IExecutable';
 import TaskStatus from './TaskStatus';
 
 export default class RetriesExecutor implements IExecutable {
     constructor(
-        private readonly task: InvokerTask,
+        private readonly task: ITask,
         private readonly retries: TRetries = 1,
     ) {
     }

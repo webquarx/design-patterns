@@ -13,22 +13,22 @@ export enum TTaskStatus {
     rejected = 'rejected',
 }
 
-export interface InvokerTask {
-    command: ICommand,
-    status?: TTaskStatus,
-    retries?: TRetries,
-    result?: ITaskResult,
-}
-
 export interface ITaskResult {
     error?: unknown,
     value?: any,
 }
 
-export type TInvokerTask = ICommand | InvokerTask;
+export interface ITask {
+    command: ICommand,
+    retries?: TRetries,
+    status?: TTaskStatus,
+    result?: ITaskResult,
+}
+
+export type TTask = ICommand | ITask;
 
 export interface ICreateCommandFunc {
-    (item: any): TInvokerTask;
+    (item: any): TTask;
 }
 
 export type TaskLimits = {

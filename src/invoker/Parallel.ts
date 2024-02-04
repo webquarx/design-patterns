@@ -1,4 +1,4 @@
-import { InvokerTask, TaskLimits } from './TInvoker';
+import { ITask, TaskLimits } from './TInvoker';
 import RetriesExecutor from './tasks/RetriesExecutor';
 import ResultCollector from './tasks/ResultCollector';
 import ParallelIterator from './tasks/ParallelIterator';
@@ -14,7 +14,7 @@ export default class Parallel {
     private args: any[] = [];
 
     constructor(
-        tasks: ReadonlyArray<InvokerTask>,
+        tasks: ReadonlyArray<ITask>,
         private readonly limits?: TaskLimits,
     ) {
         this.results = new ResultCollector(tasks);

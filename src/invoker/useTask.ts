@@ -1,6 +1,6 @@
 import InvokerCommandTaskFactory from './factory/InvokerCommandTaskFactory';
-import { InvokerTask, TInvokerTask } from './TInvoker';
+import { ITask, TTask } from './TInvoker';
 
-export default function useTask(item: TInvokerTask): InvokerTask {
+export default function useTask(item: TTask): ITask {
     return new InvokerCommandTaskFactory().create(item);
 }

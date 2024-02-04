@@ -1,6 +1,6 @@
 import Parallel from '../Parallel';
 import ICommand from '../../command/ICommand';
-import { InvokerTask } from '../TInvoker';
+import { ITask } from '../TInvoker';
 
 class MockCommand implements ICommand {
     constructor(
@@ -157,7 +157,7 @@ describe('Parallel', () => {
             setTimeout(resolve, 50);
         });
 
-        const results = tasks.map((task: InvokerTask) => task.result);
+        const results = tasks.map((task: ITask) => task.result);
         expect(results).toEqual([{ value: 1 }, { error: new Error('reject: 2') }]);
     });
 });
