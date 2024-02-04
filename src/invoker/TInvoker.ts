@@ -31,7 +31,7 @@ export interface ICreateCommandFunc {
     (item: any): TTask;
 }
 
-export type TaskLimits = {
+export type TTaskLimits = {
     concurrent?: number,
     retries?: TRetries,
 };

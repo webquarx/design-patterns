@@ -1,5 +1,5 @@
 import {
-    ITask, ICreateCommandFunc, TTask, TaskLimits,
+    ITask, ICreateCommandFunc, TTask, TTaskLimits,
 } from './TInvoker';
 import InvokerTaskFactory from './factory/InvokerTaskFactory';
 import Parallel from './Parallel';
@@ -7,7 +7,7 @@ import Parallel from './Parallel';
 export default class Invoker {
     protected readonly taskList: ITask[] = [];
 
-    protected limits: TaskLimits = {
+    protected limits: TTaskLimits = {
         retries: 1,
     };
 
@@ -23,7 +23,7 @@ export default class Invoker {
         return this.taskList;
     }
 
-    limit(limits: TaskLimits): Invoker {
+    limit(limits: TTaskLimits): Invoker {
         const retries = typeof limits.retries === 'number' ? Math.max(1, limits.retries) : limits.retries || 1;
         this.limits = { ...limits, retries };
         return this;

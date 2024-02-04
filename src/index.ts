@@ -16,7 +16,7 @@ export { useCommand } from './command/useCommand';
 
 // Invoker
 export type {
-    ITask, TRetries, TaskLimits, ICreateCommandFunc,
+    ITask, TRetries, TTaskLimits, ICreateCommandFunc,
 } from './invoker/TInvoker';
 export { default as Invoker } from './invoker/Invoker';
 export { default as useTask } from './invoker/useTask';
