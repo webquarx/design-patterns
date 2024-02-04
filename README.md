@@ -587,6 +587,37 @@ The field contains two values: ```value``` and ```error```. If the task is not c
 
 ```result.error```: the error caught while executing the command
 
+#### Task Key
+Each task has its own unique key, which is automatically generated in UUID format if not provided.
+```typescript
+const task = {
+    command: useCommand(/*...*/),
+};
+const invoker = new Invoker(task);
+console.log(task.key); // b81141e5-19fe-465d-a0b6-f7b7b05d4e58
+```
+
+The key generation algorithm does not utilize a crypto library or any other dependencies to maintain zero dependency and minimize package size.
+It is based on a well-known algorithm using `Math.random`, as the task's key does not necessitate high randomness or the avoidance of repeating the same random sequence.
+
+In any case, it is possible to use any other UUID implementation when creating a task.
+The ```task.key``` will be automatically generated only if it was not provided.
+```typescript
+const invoker = new Invoker(
+    [1, 2, 3],
+    (item) => ({
+        command: new TestCommand(item),
+        key: item,
+    }),
+);
+```
+Since the task key in unique, it can be used within templates with UI frameworks like Vue or React. For example, using the task key in a Vue template:
+```vue
+<ul>
+  <li v-for="task in tasks" :key="task.key">...</li>
+</ul>
+```
+
 ### useTask Function
 Create a task using the ```useTask``` function to ensure that all necessary fields are present in the task object.
 The task will contain the following object with default values:
@@ -598,7 +629,8 @@ console.log(task);
     command: Command,
     status: 'idle',
     retries: 1,
-    result: { error: undefined, value: undefined }
+    result: { error: undefined, value: undefined },
+    key: 'xxxxxxx-...xxx',
 }
  */
 ```
