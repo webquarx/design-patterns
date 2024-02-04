@@ -1,4 +1,4 @@
-import { InvokerTask, InvokerTaskResult, TRetries } from '../TInvoker';
+import { InvokerTask, ITaskResult, TRetries } from '../TInvoker';
 import executeCommand from '../../core/executeCommand';
 import IExecutable from '../../core/IExecutable';
 import InvokerTaskStatus from './InvokerTaskStatus';
@@ -10,7 +10,7 @@ export default class RetriesExecutor implements IExecutable {
     ) {
     }
 
-    async execute(...args: any[]): Promise<InvokerTaskResult> {
+    async execute(...args: any[]): Promise<ITaskResult> {
         InvokerTaskStatus.setPending(this.task);
 
         const res = await this.tryExecute(1, args);
@@ -19,7 +19,7 @@ export default class RetriesExecutor implements IExecutable {
         return res;
     }
 
-    private async tryExecute(attempt: number, args: any[]): Promise<InvokerTaskResult> {
+    private async tryExecute(attempt: number, args: any[]): Promise<ITaskResult> {
         const { command, retries = this.retries } = this.task;
         try {
             const value = await executeCommand(command, ...args);

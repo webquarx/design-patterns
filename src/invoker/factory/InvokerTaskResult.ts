@@ -1,7 +1,7 @@
-import { InvokerTaskResult as TaskResult } from '../TInvoker';
+import { ITaskResult } from '../TInvoker';
 
 export default class InvokerTaskResult {
-    static get default(): TaskResult {
+    static get default(): ITaskResult {
         return {
             error: undefined,
             value: undefined,

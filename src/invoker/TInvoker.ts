@@ -17,10 +17,10 @@ export interface InvokerTask {
     command: ICommand,
     status?: InvokerTaskStatus,
     retries?: TRetries,
-    result?: InvokerTaskResult,
+    result?: ITaskResult,
 }
 
-export interface InvokerTaskResult {
+export interface ITaskResult {
     error?: unknown,
     value?: any,
 }

@@ -1,4 +1,4 @@
-import { InvokerTask, InvokerTaskResult, InvokerTaskStatus as TaskStatus } from '../TInvoker';
+import { InvokerTask, ITaskResult, InvokerTaskStatus as TaskStatus } from '../TInvoker';
 
 export default class InvokerTaskStatus {
     static get default(): TaskStatus {
@@ -10,7 +10,7 @@ export default class InvokerTaskStatus {
         task.status = TaskStatus.pending;
     }
 
-    static setFromResult(task: InvokerTask, result: InvokerTaskResult): void {
+    static setFromResult(task: InvokerTask, result: ITaskResult): void {
         // eslint-disable-next-line no-param-reassign
         task.status = result.error ? TaskStatus.rejected : TaskStatus.fulfilled;
     }
