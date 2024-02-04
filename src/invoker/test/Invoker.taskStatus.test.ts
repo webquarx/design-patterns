@@ -1,6 +1,6 @@
 import Invoker from '../Invoker';
 import { useCommand } from '../../command/useCommand';
-import { InvokerTaskStatus } from '../TInvoker';
+import { TTaskStatus } from '../TInvoker';
 
 describe('Invoker.taskStatus', () => {
     it('should set statuses for successfully tasks', async () => {
@@ -12,7 +12,7 @@ describe('Invoker.taskStatus', () => {
                     setTimeout(resolve, item, item);
                 }),
             ),
-            set status(val: InvokerTaskStatus) {
+            set status(val: TTaskStatus) {
                 log.push(`${item} - ${val}`);
             },
         }));
@@ -47,7 +47,7 @@ describe('Invoker.taskStatus', () => {
                     setTimeout(resolve, item, item);
                 }),
             ),
-            set status(val: InvokerTaskStatus) {
+            set status(val: TTaskStatus) {
                 log.push(`${item} - ${val}`);
             },
         }));

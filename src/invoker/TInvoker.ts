@@ -6,7 +6,7 @@ export interface IRetriesFunc {
 
 export type TRetries = number | IRetriesFunc;
 
-export enum InvokerTaskStatus {
+export enum TTaskStatus {
     idle = 'idle',
     pending = 'pending',
     fulfilled = 'fulfilled',
@@ -15,7 +15,7 @@ export enum InvokerTaskStatus {
 
 export interface InvokerTask {
     command: ICommand,
-    status?: InvokerTaskStatus,
+    status?: TTaskStatus,
     retries?: TRetries,
     result?: ITaskResult,
 }
