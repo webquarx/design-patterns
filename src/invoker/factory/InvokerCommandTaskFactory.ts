@@ -1,6 +1,6 @@
 import { InvokerTask, TInvokerTask } from '../TInvoker';
 import InvokerTaskStatus from '../tasks/InvokerTaskStatus';
-import InvokerTaskResult from './InvokerTaskResult';
+import TaskResult from '../tasks/TaskResult';
 
 export default class InvokerCommandTaskFactory {
     create(item: TInvokerTask): InvokerTask {
@@ -9,7 +9,7 @@ export default class InvokerCommandTaskFactory {
             task.status = InvokerTaskStatus.default;
         }
         if (!task.result) {
-            task.result = InvokerTaskResult.default;
+            task.result = TaskResult.default;
         }
         if (!task.retries) {
             task.retries = undefined;
