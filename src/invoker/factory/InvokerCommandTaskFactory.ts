@@ -1,10 +1,14 @@
 import { ITask, TTask } from '../TInvoker';
 import TaskStatus from '../tasks/TaskStatus';
 import TaskResult from '../tasks/TaskResult';
+import TaskKey from '../tasks/TaskKey';
 
 export default class InvokerCommandTaskFactory {
     create(item: TTask): ITask {
         const task = this.getTask(item);
+        if (!task.key) {
+            task.key = TaskKey.generate();
+        }
         if (!task.status) {
             task.status = TaskStatus.default;
         }

@@ -15,13 +15,11 @@ describe('create Invoker', () => {
         const command = new MockCommand();
         const invoker = new Invoker(command);
 
-        expect(invoker.tasks).toEqual([
-            {
-                command,
-                status: 'idle',
-                result: { error: undefined, value: undefined },
-            },
-        ]);
+        expect(invoker.tasks[0]).toMatchObject({
+            command,
+            status: 'idle',
+            result: { error: undefined, value: undefined },
+        });
     });
 
     it('should initialize with an array of commands', () => {

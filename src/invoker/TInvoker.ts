@@ -20,6 +20,7 @@ export interface ITaskResult {
 
 export interface ITask {
     command: ICommand,
+    key?: string,
     retries?: TRetries,
     status?: TTaskStatus,
     result?: ITaskResult,
