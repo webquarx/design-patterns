@@ -658,6 +658,19 @@ fulfilled
  */
 ```
 
+### Retrieving all tasks
+The Invoker supports a read-only ```tasks``` property for retrieving all task objects in a single array.
+The result from the getter is an array **that is not a copy**. For this reason, the array is safeguarded with TypeScript's ```ReadonlyArray```.
+
+```typescript
+const invoker = new Invoker(
+    [1, 2, 3],
+    (item) => new TestCommand(item),
+);
+invoker.tasks.forEach((item) => console.log(item.status))
+```
+The property is accessible at any time, even when tasks are running.
+
 ### Parallel
 Run multiple commands simultaneously, without waiting for each one to finish before starting the next.
 If any command encounters an error, the promise will be promptly rejected with the first error.
