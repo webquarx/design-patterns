@@ -1,9 +1,9 @@
 import { ITask, TTaskLimits } from './TInvoker';
-import RetriesExecutor from './tasks/RetriesExecutor';
 import ResultCollector from './tasks/ResultCollector';
 import ParallelIterator from './tasks/ParallelIterator';
 import PromiseResolvers from './PromiseResolvers';
 import TaskStatus from './tasks/TaskStatus';
+import ExecutorFactory from './executor/ExecutorFactory';
 
 export default class Parallel {
     private readonly promise = new PromiseResolvers<any[]>();
@@ -52,7 +52,8 @@ export default class Parallel {
         const task = this.iterator.current;
         TaskStatus.setPending(task);
 
-        const res = await new RetriesExecutor(task, this.limits?.retries).execute(...this.args);
+        const executor = new ExecutorFactory(task, this.limits).create();
+        const res = await executor.execute(...this.args);
 
         TaskStatus.setFromResult(task, res);
         this.results.setIfNoError(task, res);
