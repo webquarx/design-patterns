@@ -3,6 +3,7 @@ import RetriesExecutor from './tasks/RetriesExecutor';
 import ResultCollector from './tasks/ResultCollector';
 import ParallelIterator from './tasks/ParallelIterator';
 import PromiseResolvers from './PromiseResolvers';
+import TaskStatus from './tasks/TaskStatus';
 
 export default class Parallel {
     private readonly promise = new PromiseResolvers<any[]>();
@@ -49,9 +50,11 @@ export default class Parallel {
 
     private async executeTask(): Promise<void> {
         const task = this.iterator.current;
+        TaskStatus.setPending(task);
 
         const res = await new RetriesExecutor(task, this.limits?.retries).execute(...this.args);
 
+        TaskStatus.setFromResult(task, res);
         this.results.setIfNoError(task, res);
         this.iterator.complete();
         this.runNextTask();

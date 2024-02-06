@@ -37,12 +37,9 @@ describe('Invoker.taskStatus.Vue', () => {
             '10 - idle',
             '20 - pending',
             '50 - pending',
-            '20 - fulfilled',
             '20 - fulfilled - 20',
             '10 - pending',
-            '10 - fulfilled',
             '10 - fulfilled - 10',
-            '50 - fulfilled',
             '50 - fulfilled - 50',
         ]);
     });
