@@ -1,4 +1,4 @@
-import { ITask, TTaskLimits } from '../TInvoker';
+import { ITask, TRetries, TTaskLimits } from '../TInvoker';
 import RetriesExecutor from './RetriesExecutor';
 import FunctionExecutor from './FunctionExecutor';
 import IExecutable from '../../core/IExecutable';
@@ -35,7 +35,11 @@ export default class ExecutorFactory {
     }
 
     private isRetries(): boolean {
-        const retries = this.limits?.retries;
+        return this.checkRetries(this.limits?.retries) || this.checkRetries(this.task.retries);
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    private checkRetries(retries?: TRetries): boolean {
         if (typeof retries === 'number' && retries === 1) {
             return false;
         }
