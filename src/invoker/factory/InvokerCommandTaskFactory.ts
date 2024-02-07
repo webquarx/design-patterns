@@ -18,6 +18,9 @@ export default class InvokerCommandTaskFactory {
         if (!task.retries) {
             task.retries = undefined;
         }
+        if (!task.timeout) {
+            task.timeout = undefined;
+        }
 
         return task;
     }

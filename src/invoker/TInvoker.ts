@@ -22,6 +22,7 @@ export interface ITask {
     command: ICommand,
     key?: number | string,
     retries?: TRetries,
+    timeout?: number,
     status?: TTaskStatus,
     result?: ITaskResult,
 }
@@ -35,4 +36,5 @@ export interface ICreateCommandFunc {
 export type TTaskLimits = {
     concurrent?: number,
     retries?: TRetries,
+    timeout?: number,
 };
