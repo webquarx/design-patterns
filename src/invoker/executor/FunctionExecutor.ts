@@ -3,7 +3,7 @@ import executeCommand from '../../core/executeCommand';
 import { ITask, ITaskResult } from '../TInvoker';
 
 export default class FunctionExecutor implements IExecutable {
-    constructor(private readonly task: ITask) {
+    constructor(protected readonly task: ITask) {
     }
 
     async execute(...args: any[]): Promise<ITaskResult> {

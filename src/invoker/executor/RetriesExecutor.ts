@@ -1,12 +1,14 @@
 import { ITask, ITaskResult, TRetries } from '../TInvoker';
 import IExecutable from '../../core/IExecutable';
+import FunctionExecutor from './FunctionExecutor';
 
-export default class RetriesExecutor implements IExecutable {
+export default class RetriesExecutor extends FunctionExecutor {
     constructor(
-        private readonly executor: IExecutable,
-        private readonly task: ITask,
+        task: ITask,
+        private readonly executor?: IExecutable,
         private readonly retries: TRetries = 1,
     ) {
+        super(task);
     }
 
     async execute(...args: any[]): Promise<ITaskResult> {
@@ -16,7 +18,7 @@ export default class RetriesExecutor implements IExecutable {
     private async tryExecute(attempt: number, args: any[]): Promise<ITaskResult> {
         const { command, retries = this.retries } = this.task;
 
-        const result = await this.executor.execute(command, ...args);
+        const result = await this.executeCommand(args);
 
         if (result.error) {
             if (typeof retries === 'number' && attempt >= retries) {
@@ -29,5 +31,12 @@ export default class RetriesExecutor implements IExecutable {
         }
 
         return result;
+    }
+
+    private executeCommand(args: any[]): Promise<ITaskResult> {
+        if (this.executor) {
+            return this.executor.execute(...args);
+        }
+        return super.execute(...args);
     }
 }

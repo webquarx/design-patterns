@@ -1,20 +1,20 @@
-import IExecutable from '../../core/IExecutable';
 import { ITask, ITaskResult } from '../TInvoker';
+import FunctionExecutor from './FunctionExecutor';
 
-export default class TimeoutExecutor implements IExecutable {
+export default class TimeoutExecutor extends FunctionExecutor {
     constructor(
-        private readonly executor: IExecutable,
-        private readonly task: ITask,
+        task: ITask,
         private readonly timeout: number = 0,
     ) {
+        super(task);
     }
 
     async execute(...args: any[]): Promise<ITaskResult> {
-        const { command, timeout = this.timeout } = this.task;
+        const { timeout = this.timeout } = this.task;
 
         return await Promise.race([
-            this.executor.execute(command, ...args),
-            new Promise((resolve) => {
+            super.execute(...args),
+            new Promise<ITaskResult>((resolve) => {
                 setTimeout(resolve, timeout, { error: new Error('Operation reached timeout') });
             }),
         ]);

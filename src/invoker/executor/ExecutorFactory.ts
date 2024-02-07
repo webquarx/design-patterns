@@ -11,27 +11,19 @@ export default class ExecutorFactory {
     ) {}
 
     create(): IExecutable {
-        const defaultExecutor = new FunctionExecutor(this.task);
-
-        let timeoutExecutor;
-        if (this.isTimeout()) {
-            timeoutExecutor = new TimeoutExecutor(
-                defaultExecutor,
-                this.task,
-                this.limits?.timeout,
-            );
-        }
-
-        const executor = timeoutExecutor || defaultExecutor;
+        const timeoutExecutor = this.isTimeout()
+            ? new TimeoutExecutor(this.task, this.limits?.timeout)
+            : undefined;
 
         if (this.isRetries()) {
             return new RetriesExecutor(
-                executor,
                 this.task,
+                timeoutExecutor,
                 this.limits?.retries,
             );
         }
-        return executor;
+
+        return timeoutExecutor || new FunctionExecutor(this.task);
     }
 
     private isRetries(): boolean {
