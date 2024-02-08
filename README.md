@@ -532,6 +532,19 @@ invoker.limit({
 });
 ```
 
+#### Timeout
+The ```timeout``` specifies the maximum number of milliseconds allowed for each command to complete.
+If the timeout is reached before the command has completed, the command will fail with an exception.
+
+```typescript
+const invoker = new Invoker([/* commands */]);
+invoker.limit({ timeout: 100 }); // Set a 100ms execution time limit for each command
+```
+
+The timeout and retries limits can be used together.
+If both are specified and the command reaches the timeout, it will raise an exception.
+With the retries parameter the Invoker will attempt to run such command again until the retries value is reached or task completes.  
+
 ### Invoker Tasks
 Each command can be represented as a task. This can be useful for monitoring command status or specifying custom execution limits.
 
@@ -558,7 +571,8 @@ For monitoring the current task status, use the ```status``` field. The possible
 #### Task Limits
 Each command could have its own limit, which overrides the common limit specified for the Invoker.
 
-```retries```: the same as Invoker ```retries``` limit. Represents the number of retry attempts for executing a command or an asynchronous function indicating whether the command execution should be continued. 
+```retries```: the same as Invoker ```retries``` limit.
+Represents the number of retry attempts for executing a command or an asynchronous function indicating whether the command execution should be continued. 
 
 The value for the command overrides the retries value specified in the ```Invoker.limit``` method. 
 ```typescript
@@ -577,6 +591,20 @@ const invoker = new Invoker([
     },
 ]);
 invoker.limit({ retries: 3 });
+```
+
+```timeout```: the same as Invoker ```timeout``` limit.
+Represent the maximum number of milliseconds allowed for the command to complete.
+
+```typescript
+const invoker = new Invoker([
+    useCommand(/*...*/), // invoker.limit timeout is used
+    {
+        command: useCommand(/*...*/),
+        timeout: 4000, // will override invoker.limit timeout
+    },
+]);
+invoker.limit({ timeout: 3000 });
 ```
 
 #### Task Result
