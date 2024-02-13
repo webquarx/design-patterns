@@ -1,5 +1,6 @@
 import { ITask, ITaskResult } from '../TInvoker';
 import FunctionExecutor from './FunctionExecutor';
+import OperationTimeoutError from '../error/OperationTimeoutError';
 
 export default class TimeoutExecutor extends FunctionExecutor {
     constructor(
@@ -9,13 +10,18 @@ export default class TimeoutExecutor extends FunctionExecutor {
         super(task);
     }
 
-    async execute(...args: any[]): Promise<ITaskResult> {
+    execute(...args: any[]): Promise<ITaskResult> {
         const { timeout = this.timeout } = this.task;
 
-        return await Promise.race([
+        return Promise.race([
             super.execute(...args),
             new Promise<ITaskResult>((resolve) => {
-                setTimeout(resolve, timeout, { error: new Error('Operation reached timeout') });
+                setTimeout(resolve, timeout, {
+                    error: new OperationTimeoutError({
+                        description: `The task with '${this.task.key}' key has reached timeout`,
+                        task: this.task,
+                    }),
+                });
             }),
         ]);
     }

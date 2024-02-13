@@ -5,13 +5,20 @@ describe('Invoker.timeout.test', () => {
     it('a task should fail when it reached own timeout', async () => {
         const invoker = new Invoker([
             {
+                key: 'task1',
                 command: useCommand(async () => await new Promise((resolve) => {
                     setTimeout(resolve, 30, 'no result, just error');
                 })),
                 timeout: 20,
             },
         ]);
-        await expect(invoker.parallel()).rejects.toThrow('Operation reached timeout');
+        await expect(invoker.parallel()).rejects.toMatchObject({
+            message: 'Operation Timeout',
+            details: {
+                code: 'ETIME',
+                task: { key: 'task1' },
+            },
+        });
     });
 
     it('a task should fail when it reaches the timeout and override common timeout', async () => {
@@ -22,7 +29,7 @@ describe('Invoker.timeout.test', () => {
         ]);
         invoker.limit({ timeout: 20 });
 
-        await expect(invoker.parallel()).rejects.toThrow('Operation reached timeout');
+        await expect(invoker.parallel()).rejects.toThrow('Operation Timeout');
     });
 
     it('task timeout should succeed and override common timeout', async () => {
