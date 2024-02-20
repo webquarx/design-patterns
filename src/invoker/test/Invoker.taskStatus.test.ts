@@ -54,6 +54,11 @@ describe('Invoker.taskStatus', () => {
 
         await expect(invoker.parallel()).rejects.toThrow('reject with error - 20');
 
+        // wait for other tasks
+        await new Promise((resolve) => {
+            setTimeout(resolve, 50);
+        });
+
         expect(log).toEqual([
             '10 - idle',
             '20 - idle',
@@ -63,6 +68,7 @@ describe('Invoker.taskStatus', () => {
             '30 - pending',
             '10 - fulfilled',
             '20 - rejected',
+            '30 - rejected',
         ]);
     });
 });

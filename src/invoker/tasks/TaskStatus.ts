@@ -10,8 +10,18 @@ export default class TaskStatus {
         task.status = TTaskStatus.pending;
     }
 
-    static setFromResult(task: ITask, result: ITaskResult): void {
+    static setFromResult(task: ITask, result?: ITaskResult): void {
         // eslint-disable-next-line no-param-reassign
-        task.status = result.error ? TTaskStatus.rejected : TTaskStatus.fulfilled;
+        task.status = result?.error ? TTaskStatus.rejected : TTaskStatus.fulfilled;
+    }
+
+    static isFinalStatus(status?: TTaskStatus): boolean {
+        return status === TTaskStatus.fulfilled || status === TTaskStatus.rejected;
+    }
+
+    static cancelTasks(tasks: ITask[]): void {
+        tasks
+            .filter((task) => !TaskStatus.isFinalStatus(task.status))
+            .forEach((task) => TaskStatus.setFromResult(task, task.result));
     }
 }

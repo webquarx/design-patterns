@@ -158,6 +158,11 @@ describe('Parallel', () => {
         });
 
         const results = tasks.map((task: ITask) => task.result);
-        expect(results).toEqual([{ value: 1 }, { error: new Error('reject: 2') }]);
+        expect(results).toEqual([
+            { value: 1 },
+            { error: new Error('reject: 2') },
+            { error: new Error('Operation canceled') },
+            { error: new Error('Operation canceled') },
+        ]);
     });
 });

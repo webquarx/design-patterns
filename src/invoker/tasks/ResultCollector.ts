@@ -3,13 +3,9 @@ import { ITask, ITaskResult } from '../TInvoker';
 export default class ResultCollector {
     private firstFailedTask?: ITask;
 
-    constructor(private readonly tasks: ReadonlyArray<ITask>) {
-    }
+    private firstFailedTaskIndex = -1;
 
-    setIfNoError(task: ITask, result: ITaskResult): void {
-        if (!this.hasError()) {
-            this.set(task, result);
-        }
+    constructor(private readonly tasks: ReadonlyArray<ITask>) {
     }
 
     hasError(): boolean {
@@ -22,6 +18,7 @@ export default class ResultCollector {
 
         if (result.error && !this.hasError()) {
             this.firstFailedTask = item;
+            this.firstFailedTaskIndex = this.tasks.indexOf(item);
         }
     }
 
@@ -31,5 +28,11 @@ export default class ResultCollector {
 
     get error(): unknown {
         return this.firstFailedTask?.result?.error;
+    }
+
+    cancelTasksAfterError(): ITask[] {
+        const res = this.tasks.slice(this.firstFailedTaskIndex + 1);
+        res.forEach((task) => this.set(task, { error: new Error('Operation canceled') }));
+        return res;
     }
 }

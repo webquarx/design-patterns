@@ -39,6 +39,9 @@ export default class Parallel {
         }
 
         if (this.results.hasError()) {
+            const canceledTasks = this.results.cancelTasksAfterError();
+            TaskStatus.cancelTasks(canceledTasks);
+
             this.promise.reject(this.results.error);
             return;
         }
@@ -55,9 +58,13 @@ export default class Parallel {
         const executor = new ExecutorFactory(task, this.limits).create();
         const res = await executor.execute(...this.args);
 
-        TaskStatus.setFromResult(task, res);
-        this.results.setIfNoError(task, res);
         this.iterator.complete();
-        this.runNextTask();
+
+        if (!this.results.hasError()) {
+            this.results.set(task, res);
+            TaskStatus.setFromResult(task, res);
+
+            this.runNextTask();
+        }
     }
 }
