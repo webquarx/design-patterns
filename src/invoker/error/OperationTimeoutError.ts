@@ -1,12 +1,8 @@
-export default class OperationTimeoutError extends Error {
-    public readonly details = { code: 'ETIME' };
+import OperationError from './OperationError';
 
+export default class OperationTimeoutError extends OperationError {
     constructor(details? : object) {
-        super('Operation Timeout');
-        Object.setPrototypeOf(this, OperationTimeoutError.prototype);
-
-        if (details) {
-            this.details = { ...this.details, ...details };
-        }
+        super('Operation Timeout', details);
+        this.details.code = 'ETIME';
     }
 }
