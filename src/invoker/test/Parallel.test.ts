@@ -146,7 +146,7 @@ describe('Parallel', () => {
         const tasks = [
             { command: new SlowMockCommand(1, logs, 10) },
             { command: new SlowRejectMockCommand(2, logs, 10) },
-            { command: new SlowRejectMockCommand(3, logs, 10) },
+            { command: new SlowRejectMockCommand(3, logs, 10), key: 'task3' },
             { command: new SlowMockCommand(4, logs, 10) },
         ];
 
@@ -164,5 +164,14 @@ describe('Parallel', () => {
             { error: new Error('Operation canceled') },
             { error: new Error('Operation canceled') },
         ]);
+
+        // @ts-expect-error parallels.results.tasks is private
+        expect(parallels.results.tasks[2].result.error).toMatchObject({
+            message: 'Operation canceled',
+            details: {
+                code: 'ECANCEL',
+                task: { key: 'task3' },
+            },
+        });
     });
 });

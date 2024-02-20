@@ -1,4 +1,5 @@
 import { ITask, ITaskResult } from '../TInvoker';
+import OperationCanceledError from '../error/OperationCanceledError';
 
 export default class ResultCollector {
     private firstFailedTask?: ITask;
@@ -32,7 +33,12 @@ export default class ResultCollector {
 
     cancelTasksAfterError(): ITask[] {
         const res = this.tasks.slice(this.firstFailedTaskIndex + 1);
-        res.forEach((task) => this.set(task, { error: new Error('Operation canceled') }));
+        res.forEach((task) => this.set(task, {
+            error: new OperationCanceledError({
+                description: `The task with '${task.key}' key was canceled`,
+                task,
+            }),
+        }));
         return res;
     }
 }
