@@ -161,13 +161,13 @@ describe('Parallel', () => {
         expect(results).toEqual([
             { value: 1 },
             { error: new Error('reject: 2') },
-            { error: new Error('Operation canceled') },
-            { error: new Error('Operation canceled') },
+            { error: new Error('Operation Canceled') },
+            { error: new Error('Operation Canceled') },
         ]);
 
         // @ts-expect-error parallels.results.tasks is private
         expect(parallels.results.tasks[2].result.error).toMatchObject({
-            message: 'Operation canceled',
+            message: 'Operation Canceled',
             details: {
                 code: 'ECANCEL',
                 task: { key: 'task3' },

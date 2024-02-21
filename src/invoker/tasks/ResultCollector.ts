@@ -35,7 +35,7 @@ export default class ResultCollector {
         const res = this.tasks.slice(this.firstFailedTaskIndex + 1);
         res.forEach((task) => this.set(task, {
             error: new OperationCanceledError({
-                description: `The task with '${task.key}' key was canceled`,
+                description: `The task with the key '${task.key}' was canceled`,
                 task,
             }),
         }));

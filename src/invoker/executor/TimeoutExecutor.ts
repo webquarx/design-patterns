@@ -18,7 +18,7 @@ export default class TimeoutExecutor extends FunctionExecutor {
             new Promise<ITaskResult>((resolve) => {
                 setTimeout(resolve, timeout, {
                     error: new OperationTimeoutError({
-                        description: `The task with '${this.task.key}' key has reached timeout`,
+                        description: `The task with ${this.task.key} key has reached timeout`,
                         task: this.task,
                     }),
                 });
