@@ -534,7 +534,7 @@ invoker.limit({
 
 #### Timeout
 The ```timeout``` specifies the maximum number of milliseconds allowed for each command to complete.
-If the timeout is reached before the command has completed, the command will fail with an exception.
+If the timeout is reached before the command has completed, the command will fail with 'Operation timeout' exception.
 
 ```typescript
 const invoker = new Invoker([/* commands */]);
@@ -701,16 +701,44 @@ The property is accessible at any time, even when tasks are running.
 
 ### Parallel
 Run multiple commands simultaneously, without waiting for each one to finish before starting the next.
-If any command encounters an error, the promise will be promptly rejected with the first error.
+
 Once all commands have finished, their results will be returned as an array.
+
+If any command encounters an error, the promise will be promptly rejected with the first error.
+Any tasks with Idle or Pending status will be rejected with an 'Operation canceled' error.
 
 You can limit the number of concurrently running commands using the ```limit``` method.
 Without setting a command execution limit, the method will run all commands simultaneously.
 In this case, its execution is equivalent to the `Promise.all` method.
 
-The method also supports any number of arguments, which will be passed ```canExecute``` and ```execute``` methods of commands. 
+The method also supports any number of arguments, which will be passed to the ```canExecute``` and ```execute``` methods of commands. 
 
 ```typescript
 const commands = [/* commands */];
 await new Invoker(commands).limit({ concurrent: 2 }).parallel();
 ```
+
+### Errors
+
+#### Operation Timeout
+An operation timeout error will be thrown when a task is reached the timeout.
+
+```message```: Operation Timeout
+
+```code```: ETIME
+
+```details.description```: The task with the key {task-key} has reached the timeout.
+
+```details.task```: The task encountering the error
+
+#### Operation Canceled
+An "Operation Canceled" error will be thrown when a task is canceled.
+This can occur when executing in parallel and a previous task was rejected with an error.
+
+```message```: Operation Canceled
+
+```code```: ECANCEL
+
+```details.description```: The task with the key {task-key} was canceled.
+
+```details.task```: The task encountering the error
